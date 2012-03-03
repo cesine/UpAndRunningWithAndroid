@@ -44,7 +44,7 @@ int main(void)
 
   XFinder* ball_finder = new XFinder();
   ball_finder->LoadINISettings(ini);
-  httpd::ball_finder = ball_finder;
+//  httpd::ball_finder = ball_finder;
 
   BallTracker tracker = BallTracker();
   BallFollower follower = BallFollower();
