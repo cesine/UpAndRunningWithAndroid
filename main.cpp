@@ -21,32 +21,32 @@ using namespace Robot;
 
 void change_current_dir()
 {
-    char exepath[1024] = {0};
-    if(readlink("/proc/self/exe", exepath, sizeof(exepath)) != -1)
-        chdir(dirname(exepath));
+  char exepath[1024] = {0};
+  if(readlink("/proc/self/exe", exepath, sizeof(exepath)) != -1)
+    chdir(dirname(exepath));
 }
 
 int main(void)
 {
-    printf( "\n===== Ball following Tutorial for DARwIn =====\n\n");
+  printf( "\n===== Ball following Tutorial for DARwIn =====\n\n");
 
-    change_current_dir();
+  change_current_dir();
 
-    Image* rgb_ball = new Image(Camera::WIDTH, Camera::HEIGHT, Image::RGB_PIXEL_SIZE);
+  Image* rgb_ball = new Image(Camera::WIDTH, Camera::HEIGHT, Image::RGB_PIXEL_SIZE);
 
-    minIni* ini = new minIni(INI_FILE_PATH);
+  minIni* ini = new minIni(INI_FILE_PATH);
 
-    LinuxCamera::GetInstance()->Initialize(0);
-    LinuxCamera::GetInstance()->LoadINISettings(ini);
+  LinuxCamera::GetInstance()->Initialize(0);
+  LinuxCamera::GetInstance()->LoadINISettings(ini);
 
-    mjpg_streamer* streamer = new mjpg_streamer(Camera::WIDTH, Camera::HEIGHT);
+  mjpg_streamer* streamer = new mjpg_streamer(Camera::WIDTH, Camera::HEIGHT);
 
-    ColorFinder* ball_finder = new ColorFinder();
-    ball_finder->LoadINISettings(ini);
-    httpd::ball_finder = ball_finder;
+  ColorFinder* ball_finder = new ColorFinder();
+  ball_finder->LoadINISettings(ini);
+  httpd::ball_finder = ball_finder;
 
-    BallTracker tracker = BallTracker();
-    BallFollower follower = BallFollower();
+  BallTracker tracker = BallTracker();
+  BallFollower follower = BallFollower();
   follower.DEBUG_PRINT = true;
 
   //////////////////// Framework Initialize ////////////////////////////
@@ -90,32 +90,36 @@ int main(void)
   printf("Press the ENTER key to begin!\n");
   getchar();
   
-    Head::GetInstance()->m_Joint.SetEnableHeadOnly(true, true);
-    Walking::GetInstance()->m_Joint.SetEnableBodyWithoutHead(true, true);
+  Head::GetInstance()->m_Joint.SetEnableHeadOnly(true, true);
+  Walking::GetInstance()->m_Joint.SetEnableBodyWithoutHead(true, true);
   MotionManager::GetInstance()->SetEnable(true);
 
-    while(1)
+  while(1)
+  {
+    Point2D pos;
+    LinuxCamera::GetInstance()->CaptureFrame();
+
+    memcpy(rgb_ball->m_ImageData, LinuxCamera::GetInstance()->fbuffer->m_RGBFrame->m_ImageData, LinuxCamera::GetInstance()->fbuffer->m_RGBFrame->m_ImageSize);
+
+    tracker.Process(ball_finder->GetPosition(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame));
+//    follower.Process(tracker.ball_position);
+
+    Walking::GetInstance()->X_MOVE_AMPLITUDE = 1.0;
+    Walking::GetInstance()->A_MOVE_AMPLITUDE = 0;
+    Walking::GetInstance()->Start();
+
+    for(int i = 0; i < rgb_ball->m_NumberOfPixels; i++)
     {
-        Point2D pos;
-        LinuxCamera::GetInstance()->CaptureFrame();
-
-        memcpy(rgb_ball->m_ImageData, LinuxCamera::GetInstance()->fbuffer->m_RGBFrame->m_ImageData, LinuxCamera::GetInstance()->fbuffer->m_RGBFrame->m_ImageSize);
-
-        tracker.Process(ball_finder->GetPosition(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame));
-        follower.Process(tracker.ball_position);
-
-        for(int i = 0; i < rgb_ball->m_NumberOfPixels; i++)
-        {
-            if(ball_finder->m_result->m_ImageData[i] == 1)
-            {
-                rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 0] = 255;
-                rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 1] = 0;
-                rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 2] = 0;
-            }
-        }
-
-        streamer->send_image(rgb_ball);
+      if(ball_finder->m_result->m_ImageData[i] == 1)
+      {
+        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 0] = 255;
+        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 1] = 0;
+        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 2] = 0;
+      }
     }
 
-    return 0;
+    streamer->send_image(rgb_ball);
+  }
+
+  return 0;
 }
