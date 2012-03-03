@@ -65,6 +65,7 @@ int main(void)
 	    printf("Action number?: ");
 	    int g; scanf("%d", &g);
 	    Action::GetInstance()->Start(g);
+	    while(Action::GetInstance()->IsRunning()) usleep(8*1000);
     }
 
     return 0;
