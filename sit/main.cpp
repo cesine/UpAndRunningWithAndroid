@@ -62,8 +62,9 @@ int main(void)
 
     while ( true )
     {
-						int g; scanf("%d", &g);
-						Action::GetInstance()->Start(g);
+	    printf("Action number?: ");
+	    int g; scanf("%d", &g);
+	    Action::GetInstance()->Start(g);
     }
 
     return 0;
