@@ -91,7 +91,7 @@ void XFinder::Filtering(Image *img)
 }
 
 
-void XFinder::FloodFill(int x, int y, Point2D* results)
+void XFinder::FloodFill(int x, int y, Point2D* x_center)
 {
   int sum_x = 0, sum_y = 0, count;
 
@@ -123,13 +123,13 @@ void XFinder::FloodFill(int x, int y, Point2D* results)
   if(count <= (m_result->m_NumberOfPixels * m_min_percent / 100) ||
      count > (m_result->m_NumberOfPixels * m_max_percent / 100))
   {
-      result->X = -1.0;
-      result->Y = -1.0;
+      x_center->X = -1.0;
+      x_center->Y = -1.0;
   }
   else
   {
-      result->X = (int)((double)sum_x / (double)count);
-      result->Y = (int)((double)sum_y / (double)count);
+      x_center->X = (int)((double)sum_x / (double)count);
+      x_center->Y = (int)((double)sum_y / (double)count);
   }
 }
 
