@@ -41,7 +41,7 @@ int main(void)
 
   mjpg_streamer* streamer = new mjpg_streamer(Camera::WIDTH, Camera::HEIGHT);
 
-  ColorFinder* ball_finder = new ColorFinder();
+  XFinder* ball_finder = new XFinder();
   ball_finder->LoadINISettings(ini);
   httpd::ball_finder = ball_finder;
 
@@ -104,9 +104,9 @@ int main(void)
     tracker.Process(ball_finder->GetPosition(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame));
 //    follower.Process(tracker.ball_position);
 
-    Walking::GetInstance()->X_MOVE_AMPLITUDE = 1.0;
-    Walking::GetInstance()->A_MOVE_AMPLITUDE = 0;
-    Walking::GetInstance()->Start();
+//    Walking::GetInstance()->X_MOVE_AMPLITUDE = 1.0;
+//    Walking::GetInstance()->A_MOVE_AMPLITUDE = 0;
+//    Walking::GetInstance()->Start();
 
     for(int i = 0; i < rgb_ball->m_NumberOfPixels; i++)
     {
