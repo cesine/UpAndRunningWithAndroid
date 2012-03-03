@@ -12,6 +12,7 @@
 #include "Camera.h"
 #include "mjpg_streamer.h"
 #include "LinuxDARwIn.h"
+#include "XFinder.h"
 
 #define INI_FILE_PATH       "config.ini"
 #define U2D_DEV_NAME        "/dev/ttyUSB0"
