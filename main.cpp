@@ -47,52 +47,52 @@ int main(void)
 
     BallTracker tracker = BallTracker();
     BallFollower follower = BallFollower();
-	follower.DEBUG_PRINT = true;
+  follower.DEBUG_PRINT = true;
 
-	//////////////////// Framework Initialize ////////////////////////////
-	LinuxCM730 linux_cm730(U2D_DEV_NAME);
-	CM730 cm730(&linux_cm730);
-	if(MotionManager::GetInstance()->Initialize(&cm730) == false)
-	{
-		printf("Fail to initialize Motion Manager!\n");
-			return 0;
-	}
-	MotionManager::GetInstance()->AddModule((MotionModule*)Head::GetInstance());
-	MotionManager::GetInstance()->AddModule((MotionModule*)Walking::GetInstance());
-	LinuxMotionTimer::Initialize(MotionManager::GetInstance());	
-	/////////////////////////////////////////////////////////////////////
+  //////////////////// Framework Initialize ////////////////////////////
+  LinuxCM730 linux_cm730(U2D_DEV_NAME);
+  CM730 cm730(&linux_cm730);
+  if(MotionManager::GetInstance()->Initialize(&cm730) == false)
+  {
+    printf("Fail to initialize Motion Manager!\n");
+      return 0;
+  }
+  MotionManager::GetInstance()->AddModule((MotionModule*)Head::GetInstance());
+  MotionManager::GetInstance()->AddModule((MotionModule*)Walking::GetInstance());
+  LinuxMotionTimer::Initialize(MotionManager::GetInstance()); 
+  /////////////////////////////////////////////////////////////////////
 
-	int n = 0;
-	int param[JointData::NUMBER_OF_JOINTS * 5];
-	int wGoalPosition, wStartPosition, wDistance;
+  int n = 0;
+  int param[JointData::NUMBER_OF_JOINTS * 5];
+  int wGoalPosition, wStartPosition, wDistance;
 
-	for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
-	{
-		wStartPosition = MotionStatus::m_CurrentJoints.GetValue(id);
-		wGoalPosition = Walking::GetInstance()->m_Joint.GetValue(id);
-		if( wStartPosition > wGoalPosition )
-			wDistance = wStartPosition - wGoalPosition;
-		else
-			wDistance = wGoalPosition - wStartPosition;
+  for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
+  {
+    wStartPosition = MotionStatus::m_CurrentJoints.GetValue(id);
+    wGoalPosition = Walking::GetInstance()->m_Joint.GetValue(id);
+    if( wStartPosition > wGoalPosition )
+      wDistance = wStartPosition - wGoalPosition;
+    else
+      wDistance = wGoalPosition - wStartPosition;
 
-		wDistance >>= 2;
-		if( wDistance < 8 )
-			wDistance = 8;
+    wDistance >>= 2;
+    if( wDistance < 8 )
+      wDistance = 8;
 
-		param[n++] = id;
-		param[n++] = CM730::GetLowByte(wGoalPosition);
-		param[n++] = CM730::GetHighByte(wGoalPosition);
-		param[n++] = CM730::GetLowByte(wDistance);
-		param[n++] = CM730::GetHighByte(wDistance);
-	}
-	cm730.SyncWrite(MX28::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);	
+    param[n++] = id;
+    param[n++] = CM730::GetLowByte(wGoalPosition);
+    param[n++] = CM730::GetHighByte(wGoalPosition);
+    param[n++] = CM730::GetLowByte(wDistance);
+    param[n++] = CM730::GetHighByte(wDistance);
+  }
+  cm730.SyncWrite(MX28::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);  
 
-	printf("Press the ENTER key to begin!\n");
-	getchar();
-	
+  printf("Press the ENTER key to begin!\n");
+  getchar();
+  
     Head::GetInstance()->m_Joint.SetEnableHeadOnly(true, true);
     Walking::GetInstance()->m_Joint.SetEnableBodyWithoutHead(true, true);
-	MotionManager::GetInstance()->SetEnable(true);
+  MotionManager::GetInstance()->SetEnable(true);
 
     while(1)
     {
