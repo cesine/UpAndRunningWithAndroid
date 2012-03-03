@@ -62,9 +62,9 @@ int main(void)
 
     while ( true )
     {
-	    int g ; cin >> g ;
-
-	    Action::GetInstance()->Start(g);    /* Init(stand up) pose */
+	    printf("Action number?: ");
+	    int g; scanf("%d", &g);
+	    Action::GetInstance()->Start(g);
     }
 
     return 0;
