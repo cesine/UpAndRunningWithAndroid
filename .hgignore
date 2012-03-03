@@ -1,6 +1,10 @@
 main\.o
 roogle_hack
 
+.project
+.classpath
+.settings
+
 bin
 gen
 
