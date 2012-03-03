@@ -14,7 +14,6 @@
 using namespace Robot;
 
 XFinder::XFinder() :
-        m_center_point(Point2D()),
         m_hue(356),
         m_hue_tolerance(15),
         m_min_saturation(50),
