@@ -171,7 +171,7 @@ void XFinder::SaveINISettings(minIni* ini, const std::string &section)
     color_section = section;
 }
 
-int XFinder::GetPositions(Image* hsv_img, Point2D[] results)
+int XFinder::GetPositions(Image* hsv_img, Point2D* results)
 {
   int nbXFound = 0;
 
