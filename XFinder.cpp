@@ -120,8 +120,8 @@ void XFinder::FloodFill(int x, int y, Point2D* results)
     unprocessed.pop();
   }
 
-  if(count <= (hsv_img->m_NumberOfPixels * m_min_percent / 100) ||
-     count > (hsv_img->m_NumberOfPixels * m_max_percent / 100))
+  if(count <= (m_result->m_NumberOfPixels * m_min_percent / 100) ||
+     count > (m_result->m_NumberOfPixels * m_max_percent / 100))
   {
       result->X = -1.0;
       result->Y = -1.0;
