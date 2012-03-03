@@ -95,14 +95,21 @@ int main(void)
   Walking::GetInstance()->m_Joint.SetEnableBodyWithoutHead(true, true);
   MotionManager::GetInstance()->SetEnable(true);
 
+  Point2D positions[100];
   while(1)
   {
-    Point2D pos;
     LinuxCamera::GetInstance()->CaptureFrame();
 
     memcpy(rgb_ball->m_ImageData, LinuxCamera::GetInstance()->fbuffer->m_RGBFrame->m_ImageData, LinuxCamera::GetInstance()->fbuffer->m_RGBFrame->m_ImageSize);
 
-    tracker.Process(ball_finder->GetPosition(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame));
+    int nbXFound = ball_finder->GetPositions(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame, positions);
+
+    if (nbXFound > 0) {
+      tracker.Process(positions[0]);
+    } else {
+      tracker.Process(Point2D(-1, -1));
+    }
+
 //    follower.Process(tracker.ball_position);
 
 //    Walking::GetInstance()->X_MOVE_AMPLITUDE = 1.0;

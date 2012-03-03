@@ -22,8 +22,6 @@ namespace Robot
   class XFinder
   {
   private:
-    Point2D m_center_point;
-
     void Filtering(Image* img);
 
   public:
@@ -37,6 +35,7 @@ namespace Robot
     std::string color_section;
 
     Image*  m_result;
+    Image*  m_visited;
 
     XFinder();
     XFinder(int hue, int hue_tol, int min_sat, int min_val, double min_per, double max_per);
@@ -47,7 +46,7 @@ namespace Robot
     void SaveINISettings(minIni* ini);
     void SaveINISettings(minIni* ini, const std::string &section);
 
-    Point2D& GetPosition(Image* hsv_img);
+    int GetPositions(Image* hsv_img, Point2D[] results);
   };
 }
 
