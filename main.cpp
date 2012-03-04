@@ -104,18 +104,53 @@ int main(void)
 
     int nbXFound = ball_finder->GetPositions(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame, positions);
 
-    Point2D pointToTrack(-1, -1);
+    Point2D lookAt(-1, -1);
+    Point2D walkTo(-1, -1);
     if (nbXFound > 0) {
-      printf("nbXFound: %d\n", nbXFound);
-      int maxY = ball_finder->m_result->m_Width * 75 / 100;
-      for (int i = 0; i < nbXFound; ++i) {
-        if (positions[i].Y < maxY && positions[i].Y > pointToTrack.Y) {
-          pointToTrack = positions[i];
+      if (nbXFound >= 4) {
+        printf("Found %d, average and go!\n", nbXFound);
+        double sumX = 0, sumY = 0;
+        for (int i = 0; i < nbXFound; ++i) {
+          sumX += positions[i].X;
+          sumY += positions[i].Y;
         }
+        lookAt.X = sumX / nbXFound;
+        lookAt.Y = sumY / nbXFound;
+        walkTo = lookAt;
+      } else if (nbXFound == 3) {
+        printf("Found 3, doing some vector arithmetic!\n");
+        double l01 = Point2D.Distance(positions[0], positions[1]);
+        double l12 = Point2D.Distance(positions[1], positions[2]);
+        Point2D l02 = Point2D.Distance(positions[0], positions[2]);
+        // Find the longest one
+        int corner = 0;
+        if (l01 >= l12 && l01 >= l02)
+          corner = 2;
+        else if (l02 >= l01 && l02 >= l12)
+          corner = 1;
+        int p0 = (corner + 1) % 3;
+        int p1 = (corner + 2) % 3;
+        lookAt.X = (positions[p0].X + positions[p1].X) / 2;
+        lookAt.Y = (positions[p0].Y + positions[p1].Y) / 2;
+        walkTo = lookAt;
+      } else if (nbXFound == 2) {
+        lookAt.X = (positions[0].X + positions[1].X) / 2;
+        lookAt.Y = (positions[0].Y + positions[1].Y) / 2;
       }
-    }      
-    tracker.Process(pointToTrack);
-//    follower.Process(pointToTrack);
+    }
+
+    // if (nbXFound > 0) {
+    //   printf("nbXFound: %d\n", nbXFound);
+    //   int maxY = ball_finder->m_result->m_Width * 75 / 100;
+    //   for (int i = 0; i < nbXFound; ++i) {
+    //     if (positions[i].Y < maxY && positions[i].Y > pointToTrack.Y) {
+    //       pointToTrack = positions[i];
+    //     }
+    //   }
+    // }
+
+    tracker.Process(lookAt);
+    follower.Process(walkTo);
 
     Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
     Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0;
