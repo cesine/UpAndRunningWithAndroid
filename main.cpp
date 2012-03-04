@@ -67,7 +67,7 @@ int main(void)
   int param[JointData::NUMBER_OF_JOINTS * 5];
   int wGoalPosition, wStartPosition, wDistance;
 
-  for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
+  /*for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
   {
     wStartPosition = MotionStatus::m_CurrentJoints.GetValue(id);
     wGoalPosition = Walking::GetInstance()->m_Joint.GetValue(id);
@@ -86,7 +86,7 @@ int main(void)
     param[n++] = CM730::GetLowByte(wDistance);
     param[n++] = CM730::GetHighByte(wDistance);
   }
-  cm730.SyncWrite(MX28::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);  
+  cm730.SyncWrite(MX28::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);  */
 
   printf("Press the ENTER key to begin!\n");
   getchar();
