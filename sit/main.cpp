@@ -46,7 +46,6 @@ int main(void)
 
     Action::GetInstance()->LoadFile(MOTION_FILE_PATH);
 
-    //////////////////// Framework Initialize ////////////////////////////
     LinuxCM730 linux_cm730("/dev/ttyUSB0");
     CM730 cm730(&linux_cm730);
     if(MotionManager::GetInstance()->Initialize(&cm730) == false)
@@ -56,7 +55,6 @@ int main(void)
     }
     MotionManager::GetInstance()->AddModule((MotionModule*)Action::GetInstance());
     LinuxMotionTimer::Initialize(MotionManager::GetInstance());
-    /////////////////////////////////////////////////////////////////////
 
     MotionManager::GetInstance()->SetEnable(true);
 

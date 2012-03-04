@@ -7,3 +7,5 @@
 double calcCircularity(std::vector<cv::Point> contour);
 
 std::string colorSomeStuff(cv::Mat& mbgra);
+
+std::string trackRed(cv::Mat& mbgra);
