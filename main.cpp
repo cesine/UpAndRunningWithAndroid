@@ -106,6 +106,7 @@ int main(void)
 
     Point2D lookAt(-1, -1);
     Point2D walkTo(-1, -1);
+/*
     if (nbXFound > 0) {
       if (nbXFound >= 4) {
         printf("Found %d, average and go!\n", nbXFound);
@@ -140,18 +141,18 @@ int main(void)
         walkTo = lookAt;
       }
     }
-
-    // if (nbXFound > 0) {
-    //   printf("nbXFound: %d\n", nbXFound)   int maxY = ball_finder->m_result->m_Width * 75 / 100;
-    //   for (int i = 0; i < nbXFound; ++i) {
-    //     if (positions[i].Y < maxY && positions[i].Y > pointToTrack.Y) {
-    //       pointToTrack = positions[i];
-    //     }
-    //   }
-    // }
+*/
+    if (nbXFound > 0) {
+      printf("nbXFound: %d\n", nbXFound)   int maxY = ball_finder->m_result->m_Width * 75 / 100;
+      for (int i = 0; i < nbXFound; ++i) {
+        if (positions[i].Y < maxY && positions[i].Y > walkTo.Y) {
+          walkTo = positions[i];
+        }
+      }
+    }
 
     follower.Process(walkTo);
-    tracker.Process(lookAt);
+    tracker.Process(walkTo);
 
     // Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
     // Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0;
