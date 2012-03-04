@@ -22,6 +22,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -47,11 +48,15 @@ import com.androidmontreal.opencv.R;
 /**
  * This is the main Activity that displays the current chat session.
  */
-public class BluetoothChat extends Activity implements PictureCallback{
+public class RoogleTank extends Activity implements PictureCallback{
     // Debugging
     private static final String TAG = "RoogleTank";
     private static final boolean D = true;
 
+    // OpenCV
+    private TextView textView1;
+
+    
     // Message types sent from the BluetoothChatService Handler
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
@@ -100,8 +105,8 @@ public class BluetoothChat extends Activity implements PictureCallback{
          * the text is retrieved by calling a native
          * function.
          */
-        TextView  tv = (TextView) findViewById(R.id.textview1);
-        tv.setText( stringFromJNI() );
+        textView1 = (TextView) findViewById(R.id.textview1);
+        textView1.setText( stringFromJNI() );
         
         // Set up the custom title
         mTitle = (TextView) findViewById(R.id.title_left_text);
@@ -117,8 +122,39 @@ public class BluetoothChat extends Activity implements PictureCallback{
             finish();
             return;
         }
+        
+        
+        getOpenCVResult(textView1);
     }
+    public void getOpenCVResult(View view){
+    	UpdateFromOpenCVTask getOpenCVResults = new UpdateFromOpenCVTask();
+        getOpenCVResults.execute(new String[] { "in execute" });
+    
+    }
+    private class UpdateFromOpenCVTask extends AsyncTask<String, Void, String> {
+		@Override
+		protected String doInBackground(String... urls) {
+			
+			Log.d(TAG,"Pausing 1 sec before calling again.");
+			// Loop every 1 sec
+			try {
+				new Thread().sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			getOpenCVResult(textView1);
+			
+			
+			String response = "hi in async";
+			response = ((RoogleTankApp) getApplication()).getLastMessage(); 
+			return response;
+		}
 
+		@Override
+		protected void onPostExecute(String result) {
+			textView1.setText(result);
+		}
+	}
     @Override
     public void onStart() {
         super.onStart();

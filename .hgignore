@@ -4,6 +4,7 @@ roogle_hack
 .project
 .classpath
 .settings
+.externalToolBuilders
 
 libs
 obj

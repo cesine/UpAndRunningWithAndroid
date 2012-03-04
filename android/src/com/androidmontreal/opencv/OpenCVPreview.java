@@ -1,5 +1,7 @@
 package com.androidmontreal.opencv;
 
+import com.androidmontreal.arduino.bluetooth.RoogleTankApp;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
@@ -22,7 +24,7 @@ public class OpenCVPreview extends CameraPreviewViewBase {
 
 		String resultsForThisFrame = processimage(getFrameWidth(), getFrameHeight(), data, rgba);
 		Log.d(TAG, "Got a string back from the cpp: "+resultsForThisFrame);
-		
+		((RoogleTankApp) mContext.getApplicationContext()).setLastMessage(resultsForThisFrame); 
 		
 		Bitmap bmp = Bitmap.createBitmap(getFrameWidth(), getFrameHeight(),
 				Bitmap.Config.ARGB_8888);

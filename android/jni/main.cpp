@@ -37,10 +37,10 @@ using namespace std;
  *   apps/samples/hello-jni/project/src/com/example/HelloJni/HelloJni.java
  */
 extern "C" {
-     JNIEXPORT jstring JNICALL Java_com_androidmontreal_arduino_bluetooth_BluetoothChat_stringFromJNI(JNIEnv * env, jobject thiz);
+     JNIEXPORT jstring JNICALL Java_com_androidmontreal_arduino_bluetooth_RoogleTank_stringFromJNI(JNIEnv * env, jobject thiz);
  };
 
- JNIEXPORT jstring JNICALL Java_com_androidmontreal_arduino_bluetooth_BluetoothChat_stringFromJNI(JNIEnv * env, jobject thiz)
+ JNIEXPORT jstring JNICALL Java_com_androidmontreal_arduino_bluetooth_RoogleTank_stringFromJNI(JNIEnv * env, jobject thiz)
  {
 	 return env->NewStringUTF("Hello From CPP");
  }
