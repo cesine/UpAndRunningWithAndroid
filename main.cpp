@@ -121,7 +121,7 @@ int main(void)
         printf("Found 3, doing some vector arithmetic!\n");
         double l01 = Point2D::Distance(positions[0], positions[1]);
         double l12 = Point2D::Distance(positions[1], positions[2]);
-        Point2D l02 = Point2D::Distance(positions[0], positions[2]);
+        double l02 = Point2D::Distance(positions[0], positions[2]);
         // Find the longest one
         int corner = 0;
         if (l01 >= l12 && l01 >= l02)
