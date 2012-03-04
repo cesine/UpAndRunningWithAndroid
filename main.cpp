@@ -107,7 +107,7 @@ int main(void)
     Point2D lookAt(-1, -1);
     Point2D walkTo(-1, -1);
 
-	if (nbXFound > 0) {
+	if (nbXFound > 3) {
 	  lookAt = positions[0];
 	  walkTo = lookAt;
 	}
