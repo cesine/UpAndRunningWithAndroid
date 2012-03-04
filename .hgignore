@@ -5,6 +5,8 @@ roogle_hack
 .classpath
 .settings
 
+libs
+obj
 bin
 gen
 
