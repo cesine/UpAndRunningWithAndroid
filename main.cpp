@@ -172,13 +172,12 @@ int main(void)
       nbFailed = 0;
     }
     if (nbFailed >= 8) {
-      printf("Failure!");
       nbFailed = 10;
-      Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-      Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-      Walking::GetInstance()->Start();
+      Walking::GetInstance()->Stop();
+//      Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
+//      Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
+//      Walking::GetInstance()->Start();
     } else {
-      printf("Success!");
       follower.Process(walkTo);
     }
   }
