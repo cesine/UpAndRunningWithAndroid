@@ -133,9 +133,8 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
   {
     x_center->X = (int)((double)sum_x / (double)count);
     x_center->Y = (int)((double)sum_y / (double)count);
-//    printf("Adding an X: %d, %d\n", (int)x_center->X, (int)x_center->Y);
+    printf("Adding an X: %d, %d\n", (int)x_center->X, (int)x_center->Y);
   }
-  printf("Found: %d pixels\n", count);
 }
 
 void XFinder::LoadINISettings(minIni* ini)
@@ -197,7 +196,6 @@ int XFinder::GetPositions(Image* hsv_img, Point2D* results)
       if(m_result->m_ImageData[m_result->m_Width * y + x] > 0 &&
          m_visited->m_ImageData[m_result->m_Width * y + x] == 0)
       {
-        printf("Flood filling from: %d, %d\n", x, y);
         FloodFill(x, y, &results[nbXFound]);
         if (results[nbXFound].X >= 0) {
           nbXFound++;

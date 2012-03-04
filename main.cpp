@@ -104,14 +104,18 @@ int main(void)
 
     int nbXFound = ball_finder->GetPositions(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame, positions);
 
+    Point2d pointToTrack(-1, -1);
     if (nbXFound > 0) {
       printf("nbXFound: %d\n", nbXFound);
-      tracker.Process(positions[0]);
-    } else {
-      tracker.Process(Point2D(-1, -1));
-    }
-
-//    follower.Process(tracker.ball_position);
+      int maxY = ball_finder->m_result->m_Width * 75 / 100;
+      for (int i = 0; i < nbXFound; ++i) {
+        if (positions[i].Y < maxY && positions[i].Y > pointToTrack.Y) {
+          pointToTrack = positions[i];
+        }
+      }
+    }      
+    tracker.Process(pointToTrack);
+    follower.Process(pointToTrack);
 
 //    Walking::GetInstance()->X_MOVE_AMPLITUDE = 1.0;
 //    Walking::GetInstance()->A_MOVE_AMPLITUDE = 0;
