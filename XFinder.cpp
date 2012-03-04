@@ -95,7 +95,7 @@ void XFinder::Filtering(Image *img)
 
 void XFinder::FloodFill(int x, int y, Point2D* x_center)
 {
-  int sum_x = 0, sum_y = 0, count;
+  int sum_x = 0, sum_y = 0, count = 0;
 
   std::queue <Point2D> unprocessed;
   unprocessed.push(Point2D(x, y));
@@ -123,7 +123,7 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
     unprocessed.pop();
   }
 
-  if(count <= (m_result->m_NumberOfPixels * m_min_percent / 100) ||
+  if(count == 0 || count <= (m_result->m_NumberOfPixels * m_min_percent / 100) ||
      count > (m_result->m_NumberOfPixels * m_max_percent / 100))
   {
     x_center->X = -1.0;
@@ -186,7 +186,7 @@ int XFinder::GetPositions(Image* hsv_img, Point2D* results)
   if(m_visited == NULL)
     m_visited = new Image(m_result->m_Width, m_result->m_Height, 1);
   else {
-    memset(m_visited, 0, m_visited->m_Width*m_visited->m_Height);
+    memset(m_visited->m_ImageData, 0, m_visited->m_Width*m_visited->m_Height);
   }
 
   for(int y = 0; y < m_result->m_Height; y++)

@@ -42,8 +42,6 @@ void change_current_dir()
 
 int main(void)
 {
-		printf( "\n===== Action script Tutorial for DARwIn =====\n\n");
-
 		change_current_dir();
 
 		LinuxCM730 linux_cm730(U2D_DEV_NAME);
@@ -54,30 +52,38 @@ int main(void)
 				return 0;
 		}
 
+		Walking::GetInstance()->Initialize();
+		Walking::GetInstance()->Start();
 
-		int n = 0;
-		int param[JointData::NUMBER_OF_JOINTS * 5];
-		int wGoalPosition, wStartPosition, wDistance;
-
-		for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
+		/*while (true)
 		{
-				wStartPosition = MotionStatus::m_CurrentJoints.GetValue(id);
-				wGoalPosition = Walking::GetInstance()->m_Joint.GetValue(id);
-				if( wStartPosition > wGoalPosition )
-						wDistance = wStartPosition - wGoalPosition;
-				else
-						wDistance = wGoalPosition - wStartPosition;
+				int n = 0;
+				int param[JointData::NUMBER_OF_JOINTS * 5];
+				int wGoalPosition, wStartPosition, wDistance;
 
-				wDistance >>= 2;
-				if( wDistance < 8 )
-						wDistance = 8;
+				for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
+				{
+						wStartPosition = MotionStatus::m_CurrentJoints.GetValue(id);
+						wGoalPosition = Walking::GetInstance()->m_Joint.GetValue(id);
+						if( wStartPosition > wGoalPosition )
+								wDistance = wStartPosition - wGoalPosition;
+						else
+								wDistance = wGoalPosition - wStartPosition;
 
-				param[n++] = id;
-				param[n++] = CM730::GetLowByte(wGoalPosition);
-				param[n++] = CM730::GetHighByte(wGoalPosition);
-				param[n++] = CM730::GetLowByte(wDistance);
-				param[n++] = CM730::GetHighByte(wDistance);
-		}
-		cm730.SyncWrite(MX28::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);
+						wDistance >>= 2;
+						if( wDistance < 8 )
+								wDistance = 8;
 
+						param[n++] = id;
+						param[n++] = CM730::GetLowByte(wGoalPosition);
+						param[n++] = CM730::GetHighByte(wGoalPosition);
+						param[n++] = CM730::GetLowByte(wDistance);
+						param[n++] = CM730::GetHighByte(wDistance);
+				}
+				cm730.SyncWrite(MX28::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);
+
+				usleep
+
+		}*/
 }
+
