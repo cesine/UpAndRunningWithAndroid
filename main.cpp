@@ -137,6 +137,7 @@ int main(void)
         printf("Found 2!\n");
         lookAt.X = (positions[0].X + positions[1].X) / 2;
         lookAt.Y = (positions[0].Y + positions[1].Y) / 2;
+        walkTo = lookAt;
       }
     }
 
