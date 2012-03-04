@@ -117,8 +117,8 @@ int main(void)
     tracker.Process(pointToTrack);
 //    follower.Process(pointToTrack);
 
-    Walking::GetInstance()->X_MOVE_AMPLITUDE = 3.0;
-    Walking::GetInstance()->A_MOVE_AMPLITUDE = 30.0;
+    Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
+    Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0;
     Walking::GetInstance()->Start();
 
     for(int i = 0; i < rgb_ball->m_NumberOfPixels; i++)
