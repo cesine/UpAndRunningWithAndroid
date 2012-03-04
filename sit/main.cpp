@@ -60,11 +60,13 @@ int main(void)
 
     MotionManager::GetInstance()->SetEnable(true);
 
-    Action::GetInstance()->Start(1);    /* Init(stand up) pose */
-    while(Action::GetInstance()->IsRunning()) usleep(8*1000);
-
-    printf("Press the ENTER key to begin!\n");
-    getchar();
+    while ( true )
+    {
+	    printf ("Number? ");
+	    int g; scanf("%d", &g);
+	    Action::GetInstance()->Start(g);
+	    while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+    }
 
     return 0;
 }

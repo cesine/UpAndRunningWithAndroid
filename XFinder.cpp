@@ -102,7 +102,7 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
     Point2D& current = unprocessed.front();
     sum_x += current.X;
     sum_y += current.Y;
-    m_visited->m_ImageData[m_result->m_Width * current.Y + current.X];
+    m_visited->m_ImageData[m_result->m_Width * (int) current.Y + (int) current.X] = 1;
     count++;
     for (int i = -1; i <= 1; i++) {
       for (int j = -1; j <= 1 ; j++) {
