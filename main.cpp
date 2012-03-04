@@ -108,7 +108,7 @@ int main(void)
     Point2D walkTo(-1, -1);
 
 	if (nbXFound > 3) {
-	  int sumX = 0, sumY = 0;
+	  int SumX = 0, SumY = 0;
 	  for ( int i = 0 ; i < nbXFound ; i++ ) {
 	    SumX += positions[i].x ;
 		SumY += positions[i].y;
