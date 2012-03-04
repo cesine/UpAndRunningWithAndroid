@@ -186,7 +186,7 @@ int XFinder::GetPositions(Image* hsv_img, Point2D* results)
   if(m_visited == NULL)
     m_visited = new Image(m_result->m_Width, m_result->m_Height, 1);
   else {
-    memset(m_visited, 0, m_visited->m_Width*m_visited->m_Height);
+//    memset(m_visited, 0, m_visited->m_Width*m_visited->m_Height);
   }
 
   for(int y = 0; y < m_result->m_Height; y++)
