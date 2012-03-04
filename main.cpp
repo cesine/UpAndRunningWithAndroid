@@ -29,7 +29,7 @@ void change_current_dir()
 
 int main(void)
 {
-  printf( "\n===== Ball following Tutorial for DARwIn =====\n\n");
+  printf( "\n===== Roogle's Dodo =====\n\n");
 
   change_current_dir();
 
@@ -103,6 +103,7 @@ int main(void)
     memcpy(rgb_ball->m_ImageData, LinuxCamera::GetInstance()->fbuffer->m_RGBFrame->m_ImageData, LinuxCamera::GetInstance()->fbuffer->m_RGBFrame->m_ImageSize);
 
     int nbXFound = ball_finder->GetPositions(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame, positions);
+    printf("nbXFound: %d\n", nbXFound);
 
     if (nbXFound > 0) {
       tracker.Process(positions[0]);

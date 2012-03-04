@@ -97,6 +97,7 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
 
   std::queue <Point2D> unprocessed;
   unprocessed.push(Point2D(x, y));
+  printf("Flood filling from: %d, %d\n", x, y);
   
   while (!unprocessed.empty()) {
     Point2D& current = unprocessed.front();
