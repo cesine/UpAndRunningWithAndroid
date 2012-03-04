@@ -108,7 +108,14 @@ int main(void)
     Point2D walkTo(-1, -1);
 
 	if (nbXFound > 3) {
-	  lookAt = positions[0];
+	  int sumX = 0, sumY = 0;
+	  for ( int i = 0 ; i < nbXFound ; i++ ) {
+	    SumX += positions[i].x ;
+		SumY += positions[i].y;
+      }
+
+	  lookAt.x = SumX / nbXFound;
+	  lookAt.y = SumY / nbXFound;
 	  walkTo = lookAt;
 	}
 
