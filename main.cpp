@@ -141,15 +141,15 @@ int main(void)
         lookAt.Y = (positions[0].Y + positions[1].Y) / 2;
         if (positions[0].X < positions[1].X) {
           if (positions[0].Y < positions[1].Y - 50) {
-            dir = 1;
-          } else if (positions[1].Y < positions[0].Y - 50) {
             dir = -1;
+          } else if (positions[1].Y < positions[0].Y - 50) {
+            dir = 1;
           }
         } else {
           if (positions[0].Y < positions[1].Y - 50) {
-            dir = -1;
-          } else if (positions[1].Y < positions[0].Y - 50) {
             dir = 1;
+          } else if (positions[1].Y < positions[0].Y - 50) {
+            dir = -1;
           }
         }
       }
