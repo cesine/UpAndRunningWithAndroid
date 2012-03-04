@@ -1,4 +1,4 @@
-package com.androidmontreal.arduino.commander;
+package com.androidmontreal.commander;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class URLConnectionReader {
 			int numBytes = is.read(buffer) ;
 			is.close();
 			
-			return String(buffer,0,numBytes);
+			return "";
         } catch (Exception e) {
 			e.printStackTrace();
 		} finally {

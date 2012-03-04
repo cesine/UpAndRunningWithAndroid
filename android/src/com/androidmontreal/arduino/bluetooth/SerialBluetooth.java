@@ -1,10 +1,12 @@
 package com.androidmontreal.arduino.bluetooth;
 
+import com.androidmontreal.commander.MyRobotsSender;
 import com.androidmontreal.opencv.R;
 import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -106,8 +108,13 @@ public class SerialBluetooth extends ListActivity
 			getOpenCVResult(textView1);
 			
 			
+	        
 			String response = "hi in async";
 			response = ((RoogleTankApp) getApplication()).getLastMessage(); 
+			// Send "My Status" to MyRobots.com
+	        Intent svc = new Intent(getApplicationContext(), MyRobotsSender.class);
+	        svc.putExtra(MyRobotsSender.STATUS, response);
+	        startService(svc);
 			return response;
 		}
 

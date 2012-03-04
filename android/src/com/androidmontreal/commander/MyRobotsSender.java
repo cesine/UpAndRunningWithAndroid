@@ -1,4 +1,4 @@
-package com.androidmontreal.arduino.commander;
+package com.androidmontreal.commander;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

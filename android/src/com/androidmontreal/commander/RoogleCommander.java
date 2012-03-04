@@ -1,4 +1,4 @@
-package com.androidmontreal.arduino.commander;
+package com.androidmontreal.commander;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,7 +18,7 @@ public class RoogleCommander extends Activity {
         startService(svc);
         
         // Get the latest status from MyRobots.com
-        Intent svcReceiver = new Intent(this, MyRobotsReceiver.class);
+        Intent svcReceiver = new Intent(this, MyRobotsSender.class);
         startService(svcReceiver);
         
         // Display "Send status"
