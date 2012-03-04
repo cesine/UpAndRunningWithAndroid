@@ -152,14 +152,15 @@ int main(void)
     // }
 
     tracker.Process(lookAt);
-    if (walkTo.X < 0) {
-      if (walking)
-        follower.Process(walkTo);
-//      walking = false;
-    } else {
-      follower.Process(walkTo);
-      walking = true;
-    }
+    follower.Process(walkTo);
+//     if (walkTo.X < 0) {
+//       if (walking)
+//         follower.Process(walkTo);
+// //      walking = false;
+//     } else {
+//       follower.Process(walkTo);
+//       walking = true;
+//     }
 
     // Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
     // Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0;
