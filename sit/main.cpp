@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <libgen.h>
+#include <stdlib.h>
 
 #include "Camera.h"
 #include "Point.h"
