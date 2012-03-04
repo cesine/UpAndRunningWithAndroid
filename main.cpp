@@ -173,10 +173,12 @@ int main(void)
     }
     if (nbFailed >= 8) {
       nbFailed = 10;
-      Walking::GetInstance()->Stop();
-//      Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-//      Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
-//      Walking::GetInstance()->Start();
+      Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
+      Walking::GetInstance()->A_MOVE_AMPLITUDE = dir * 20.0;
+      if (dir == 0)
+        Walking::GetInstance()->Stop();
+      else
+        Walking::GetInstance()->Start();
     } else {
       follower.Process(walkTo);
     }
