@@ -113,7 +113,7 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
             ny < 0 || ny >= m_result->m_Height) continue;
         if(m_result->m_ImageData[m_result->m_Width * ny + nx] > 0 &&
            m_visited->m_ImageData[m_result->m_Width * ny + nx] == 0) {
-             m_visited->m_ImageData[m_result->m_Width * ny + nx] = 1;
+          m_visited->m_ImageData[m_result->m_Width * ny + nx] = 1;
           unprocessed.push(Point2D(nx, ny));
         }
       }
@@ -183,6 +183,9 @@ int XFinder::GetPositions(Image* hsv_img, Point2D* results)
 
   if(m_visited == NULL)
     m_visited = new Image(m_result->m_Width, m_result->m_Height, 1);
+  else {
+    memset(m_visited, 0, m_visited->m_Width*m_visited->m_Height);
+  }
 
   for(int y = 0; y < m_result->m_Height; y++)
   {
