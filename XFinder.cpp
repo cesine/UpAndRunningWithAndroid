@@ -95,7 +95,7 @@ void XFinder::Filtering(Image *img)
 
 void XFinder::FloodFill(int x, int y, Point2D* x_center)
 {
-  int sum_x = 0, sum_y = 0, count;
+  int sum_x = 0, sum_y = 0, count = 0;
 
   std::queue <Point2D> unprocessed;
   unprocessed.push(Point2D(x, y));
