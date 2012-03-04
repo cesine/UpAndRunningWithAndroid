@@ -150,10 +150,8 @@ int main(void)
     //   }
     // }
 
+    follower.Process(walkTo);
     tracker.Process(lookAt);
-    if (follower.m_NoBallCount <= follower.m_NoBallMaxCount) {
-      follower.Process(walkTo);
-    }
 
     // Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
     // Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0;
