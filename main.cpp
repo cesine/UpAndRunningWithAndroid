@@ -106,6 +106,7 @@ int main(void)
 
     Point2D lookAt(-1, -1);
     Point2D walkTo(-1, -1);
+    int dir = 0;
     if (nbXFound > 0) {
       if (nbXFound >= 4) {
         printf("Found %d, average and go!\n", nbXFound);
@@ -137,6 +138,19 @@ int main(void)
         printf("Found 2!\n");
         lookAt.X = (positions[0].X + positions[1].X) / 2;
         lookAt.Y = (positions[0].Y + positions[1].Y) / 2;
+        if (positions[0].X < positions[1].X) {
+          if (positions[0].Y < positions[1].Y - 50) {
+            dir = 1;
+          } else if (positions[1].Y < positions[0].Y - 50) {
+            dir = -1;
+          }
+        } else {
+          if (positions[0].Y < positions[1].Y - 50) {
+            dir = -1;
+          } else if (positions[1].Y < positions[0].Y - 50) {
+            dir = 1;
+          }
+        }
       }
     }
 
@@ -150,12 +164,16 @@ int main(void)
     //   }
     // }
 
-    follower.Process(walkTo);
     tracker.Process(lookAt);
-
-    // Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-    // Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0;
-    // Walking::GetInstance()->Start();
+    if (walkTo.X < 0) nbFailed++;
+    if (nbFailed >= 10) {
+      nbFailed = 10;
+      Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
+      Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0 * dir;
+      Walking::GetInstance()->Start();
+    } else {
+      follower.Process(walkTo);
+    }
 
     for(int i = 0; i < rgb_ball->m_NumberOfPixels; i++)
     {
