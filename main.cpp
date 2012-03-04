@@ -104,7 +104,7 @@ int main(void)
 
     int nbXFound = ball_finder->GetPositions(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame, positions);
 
-    Point2d pointToTrack(-1, -1);
+    Point2D pointToTrack(-1, -1);
     if (nbXFound > 0) {
       printf("nbXFound: %d\n", nbXFound);
       int maxY = ball_finder->m_result->m_Width * 75 / 100;
