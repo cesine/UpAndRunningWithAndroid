@@ -152,11 +152,12 @@ int main(void)
     // }
 
     tracker.Process(lookAt);
-    if (walkTo.X >= 0) {
+    if (walkTo.X < 0) {
       if (walking)
         follower.Process(walkTo);
       walking = false;
     } else {
+      follower.Process(walkTo);
       walking = true;
     }
 
