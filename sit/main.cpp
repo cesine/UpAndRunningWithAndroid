@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <libgen.h>
+#include <stdlib.h>
 
 #include "Camera.h"
 #include "Point.h"
@@ -38,14 +39,20 @@ void change_current_dir()
         chdir(dirname(exepath));
 }
 
-int main(void)
+void DoAction(int n)
 {
-    printf( "\n===== Action script Tutorial for DARwIn =====\n\n");
+		Action::GetInstance()->Start(n);
+		while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+}
 
+
+int main(int argc, char *argv)
+{
     change_current_dir();
 
     Action::GetInstance()->LoadFile(MOTION_FILE_PATH);
 
+    //////////////////// Framework Initialize ////////////////////////////
     LinuxCM730 linux_cm730("/dev/ttyUSB0");
     CM730 cm730(&linux_cm730);
     if(MotionManager::GetInstance()->Initialize(&cm730) == false)
@@ -55,16 +62,19 @@ int main(void)
     }
     MotionManager::GetInstance()->AddModule((MotionModule*)Action::GetInstance());
     LinuxMotionTimer::Initialize(MotionManager::GetInstance());
+    /////////////////////////////////////////////////////////////////////
 
     MotionManager::GetInstance()->SetEnable(true);
 
-    while ( true )
+	while ( --argc ) DoAction( atoi(argv[argc]) ) ;
+    /*while ( true )
     {
 	    printf ("Number? ");
 	    int g; scanf("%d", &g);
 	    Action::GetInstance()->Start(g);
 	    while(Action::GetInstance()->IsRunning()) usleep(8*1000);
-    }
+    }*/
 
     return 0;
 }
+
