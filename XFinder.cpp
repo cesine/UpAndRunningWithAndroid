@@ -97,13 +97,13 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
 
   std::queue <Point2D> unprocessed;
   unprocessed.push(Point2D(x, y));
+  m_visited->m_ImageData[m_result->m_Width * y + x] = 1;
   printf("Flood filling from: %d, %d\n", x, y);
   
   while (!unprocessed.empty()) {
     Point2D& current = unprocessed.front();
     sum_x += current.X;
     sum_y += current.Y;
-    m_visited->m_ImageData[m_result->m_Width * (int) current.Y + (int) current.X] = 1;
     count++;
     for (int i = -1; i <= 1; i++) {
       for (int j = -1; j <= 1 ; j++) {
@@ -114,6 +114,7 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
             ny < 0 || ny >= m_result->m_Height) continue;
         if(m_result->m_ImageData[m_result->m_Width * ny + nx] > 0 &&
            m_visited->m_ImageData[m_result->m_Width * ny + nx] == 0) {
+             m_visited->m_ImageData[m_result->m_Width * ny + nx] = 1;
           unprocessed.push(Point2D(nx, ny));
         }
       }
@@ -124,13 +125,14 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
   if(count <= (m_result->m_NumberOfPixels * m_min_percent / 100) ||
      count > (m_result->m_NumberOfPixels * m_max_percent / 100))
   {
-      x_center->X = -1.0;
-      x_center->Y = -1.0;
+    x_center->X = -1.0;
+    x_center->Y = -1.0;
   }
   else
   {
-      x_center->X = (int)((double)sum_x / (double)count);
-      x_center->Y = (int)((double)sum_y / (double)count);
+    printf("Adding an X!\n");
+    x_center->X = (int)((double)sum_x / (double)count);
+    x_center->Y = (int)((double)sum_y / (double)count);
   }
 }
 
