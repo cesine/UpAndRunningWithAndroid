@@ -33,40 +33,49 @@
 
 void change_current_dir()
 {
-    char exepath[1024] = {0};
-    if(readlink("/proc/self/exe", exepath, sizeof(exepath)) != -1)
-        chdir(dirname(exepath));
+	char exepath[1024] = {0};
+	if(readlink("/proc/self/exe", exepath, sizeof(exepath)) != -1)
+		chdir(dirname(exepath));
 }
 
 int main(void)
 {
-    printf( "\n===== Action script Tutorial for DARwIn =====\n\n");
+	printf( "\n===== Action script Tutorial for DARwIn =====\n\n");
 
-    change_current_dir();
+	change_current_dir();
 
-    Action::GetInstance()->LoadFile(MOTION_FILE_PATH);
+	LinuxCM730 linux_cm730(U2D_DEV_NAME);
+	CM730 cm730(&linux_cm730);
+	if(MotionManager::GetInstance()->Initialize(&cm730) == false)
+	{
+		printf("Fail to initialize Motion Manager!\n");
+		return 0;
+	}
 
-    //////////////////// Framework Initialize ////////////////////////////
-    LinuxCM730 linux_cm730("/dev/ttyUSB0");
-    CM730 cm730(&linux_cm730);
-    if(MotionManager::GetInstance()->Initialize(&cm730) == false)
-    {
-        printf("Fail to initialize Motion Manager!\n");
-            return 0;
-    }
-    MotionManager::GetInstance()->AddModule((MotionModule*)Action::GetInstance());
-    LinuxMotionTimer::Initialize(MotionManager::GetInstance());
-    /////////////////////////////////////////////////////////////////////
 
-    MotionManager::GetInstance()->SetEnable(true);
+	int n = 0;
+	int param[JointData::NUMBER_OF_JOINTS * 5];
+	int wGoalPosition, wStartPosition, wDistance;
 
-    while ( true )
-    {
-	    printf ("Number? ");
-	    int g; scanf("%d", &g);
-	    Action::GetInstance()->Start(g);
-	    while(Action::GetInstance()->IsRunning()) usleep(8*1000);
-    }
+	for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
+	{
+		wStartPosition = MotionStatus::m_CurrentJoints.GetValue(id);
+		wGoalPosition = Walking::GetInstance()->m_Joint.GetValue(id);
+		if( wStartPosition > wGoalPosition )
+			wDistance = wStartPosition - wGoalPosition;
+		else
+			wDistance = wGoalPosition - wStartPosition;
 
-    return 0;
+		wDistance >>= 2;
+		if( wDistance < 8 )
+			wDistance = 8;
+
+		param[n++] = id;
+		param[n++] = CM730::GetLowByte(wGoalPosition);
+		param[n++] = CM730::GetHighByte(wGoalPosition);
+		param[n++] = CM730::GetLowByte(wDistance);
+		param[n++] = CM730::GetHighByte(wDistance);
+	}
+	cm730.SyncWrite(RX28M::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);
+
 }
