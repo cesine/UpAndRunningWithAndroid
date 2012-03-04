@@ -76,6 +76,6 @@ int main(void)
 		param[n++] = CM730::GetLowByte(wDistance);
 		param[n++] = CM730::GetHighByte(wDistance);
 	}
-	cm730.SyncWrite(RX28M::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);
+	cm730.SyncWrite(P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);
 
 }
