@@ -108,6 +108,8 @@ int main(void)
 
     Point2D lookAt(-1, -1);
     Point2D walkTo(-1, -1);
+
+    #ifdef GO_TO_SQUARE
     int dir = 0;
     if (nbXFound > 0) {
       if (nbXFound >= 4) {
@@ -164,18 +166,6 @@ int main(void)
       }
     }
 
-    // if (nbXFound > 0) {
-    //   printf("nbXFound: %d\n", nbXFound);
-    //   int maxY = ball_finder->m_result->m_Width * 75 / 100;
-    //   for (int i = 0; i < nbXFound; ++i) {
-    //     if (positions[i].Y < maxY && positions[i].Y > pointToTrack.Y) {
-    //       pointToTrack = positions[i];
-    //     }
-    //   }
-    // }
-
-    tracker.Process(lookAt);
-    follower.Process(walkTo);
     // if (walkTo.X < 0) {
     //   nbFailed++;
     //   nbSuccess = 0;
@@ -196,6 +186,24 @@ int main(void)
     //   nbSuccess = 10;
     //   follower.Process(walkTo);
     // }
+    
+    #else
+
+    if (nbXFound > 0) {
+      printf("nbXFound: %d\n", nbXFound);
+      int maxY = ball_finder->m_result->m_Width * 75 / 100;
+      for (int i = 0; i < nbXFound; ++i) {
+        if (positions[i].Y < maxY && positions[i].Y > lookAt.Y) {
+          lookAt = positions[i];
+        }
+      }
+    }
+    walkTo = lookAt;
+
+    #endif
+
+    tracker.Process(lookAt);
+    follower.Process(walkTo);
   }
 
   return 0;
