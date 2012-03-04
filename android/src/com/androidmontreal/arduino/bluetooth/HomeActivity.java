@@ -16,9 +16,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.webkit.ValueCallback;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -72,6 +77,10 @@ public class HomeActivity extends Activity {
 	private String mProbeMacAddress = null;
 	// Array adapter for the conversation thread
 	private ArrayList<String> mProbeConversationArrayAdapter;
+	
+	 // Array adapter for the conversation thread
+    private ArrayAdapter<String> mConversationArrayAdapter;
+ 
 	// String buffer for outgoing messages
 	private StringBuffer mOutStringBuffer;
 	// Local Bluetooth adapter
@@ -107,8 +116,16 @@ public class HomeActivity extends Activity {
 		// new CopyAssetsTask().execute();
 		// ActionBar actionBar = getActionBar();
 		// actionBar.setDisplayHomeAsUpEnabled(true);
+		
+		// Initialize the compose field with a listener for the return key
+        mOutEditText = (EditText) findViewById(R.id.edit_text_out);
+        mOutEditText.setOnEditorActionListener(mWriteListener);
 
+		
 		getPneuLogicProbe();
+		
+		
+//		setupChat();
 
 	}
 
@@ -219,6 +236,46 @@ public class HomeActivity extends Activity {
 		mOutStringBuffer = new StringBuffer("");
 
 	}
+	private void setupChat() {
+        Log.d(TAG, "setupChat()");
+
+        // Initialize the array adapter for the conversation thread
+        mConversationArrayAdapter = new ArrayAdapter<String>(this, R.layout.message);
+        mConversationView = (ListView) findViewById(R.id.in);
+        mConversationView.setAdapter(mConversationArrayAdapter);
+
+        // Initialize the compose field with a listener for the return key
+        mOutEditText = (EditText) findViewById(R.id.edit_text_out);
+        mOutEditText.setOnEditorActionListener(mWriteListener);
+
+        // Initialize the send button with a listener that for click events
+        mSendButton = (Button) findViewById(R.id.button_send);
+        mSendButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                // Send a message using content of the edit text widget
+                TextView view = (TextView) findViewById(R.id.edit_text_out);
+                String message = view.getText().toString();
+                sendMessage(message);
+            }
+        });
+
+        // Initialize the buffer for outgoing messages
+        mOutStringBuffer = new StringBuffer("");
+    }
+	  // The action listener for the EditText widget, to listen for the return key
+    private TextView.OnEditorActionListener mWriteListener =
+        new TextView.OnEditorActionListener() {
+        public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+            // If the action is a key-up event on the return key, send the message
+            if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
+                String message = view.getText().toString();
+                sendMessage(message);
+            }
+            if(D) Log.i(TAG, "END onEditorAction");
+            return true;
+        }
+    };
+
 
 	// The Handler that gets information back from the BluetoothChatService
 	private final Handler mHandler = new Handler() {
@@ -312,10 +369,7 @@ public class HomeActivity extends Activity {
 		}
 	}
 
-	private final void setStatus(int resId) {
-		// final ActionBar actionBar = getActionBar();
-		// actionBar.setSubtitle(resId);
-	}
+	
 
 	private final void setStatus(CharSequence subTitle) {
 		mTitle.setText(R.string.title_connected_to);
