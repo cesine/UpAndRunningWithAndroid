@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Must have $ROBOT_KEY set to the robot's key on MyRobots.com
+#
+# Expects two command line parameters. First the robot's latitude, second the
+# robot's longitude.
+
+url="http://bots.myrobots.com/update?key="$ROBOT_KEY"&lat="$1"&long="$2
+
+# stores the result in .temp
+wget $url -O .temp
+
+# deletes .temp
+rm .temp
