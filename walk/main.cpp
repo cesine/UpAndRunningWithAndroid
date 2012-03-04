@@ -54,7 +54,6 @@ int main(void)
 				return 0;
 		}
 
-
 		int n = 0;
 		int param[JointData::NUMBER_OF_JOINTS * 5];
 		int wGoalPosition, wStartPosition, wDistance;
