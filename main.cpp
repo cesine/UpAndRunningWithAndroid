@@ -115,11 +115,11 @@ int main(void)
       }
     }      
     tracker.Process(pointToTrack);
-    follower.Process(pointToTrack);
+//    follower.Process(pointToTrack);
 
-//    Walking::GetInstance()->X_MOVE_AMPLITUDE = 1.0;
-//    Walking::GetInstance()->A_MOVE_AMPLITUDE = 0;
-//    Walking::GetInstance()->Start();
+    Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
+    Walking::GetInstance()->A_MOVE_AMPLITUDE = 1.0;
+    Walking::GetInstance()->Start();
 
     for(int i = 0; i < rgb_ball->m_NumberOfPixels; i++)
     {
