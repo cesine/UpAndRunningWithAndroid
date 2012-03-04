@@ -142,9 +142,9 @@ int main(void)
         double pan_range = Head::GetInstance()->GetLeftLimitAngle();
         double pan_percent = pan / pan_range;
         if (pan_percent < 0.4)
-          dir = 1;
-        else if (pan_percent > 0.6)
           dir = -1;
+        else if (pan_percent > 0.6)
+          dir = 1;
 
         // lookAt.X = (positions[0].X + positions[1].X) / 2;
         // lookAt.Y = (positions[0].Y + positions[1].Y) / 2;
@@ -184,6 +184,7 @@ int main(void)
     }
     if (nbFailed >= 10) {
       nbFailed = 10;
+      dir = 0;
       Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
       Walking::GetInstance()->A_MOVE_AMPLITUDE = dir * 20.0;
       if (dir == 0)
