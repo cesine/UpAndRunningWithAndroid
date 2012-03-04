@@ -137,21 +137,29 @@ int main(void)
         walkTo = lookAt;
       } else if (nbXFound == 2) {
         printf("Found 2!\n");
-        lookAt.X = (positions[0].X + positions[1].X) / 2;
-        lookAt.Y = (positions[0].Y + positions[1].Y) / 2;
-        if (positions[0].X < positions[1].X) {
-          if (positions[0].Y < positions[1].Y - 50) {
-            dir = -1;
-          } else if (positions[1].Y < positions[0].Y - 50) {
-            dir = 1;
-          }
-        } else {
-          if (positions[0].Y < positions[1].Y - 50) {
-            dir = 1;
-          } else if (positions[1].Y < positions[0].Y - 50) {
-            dir = -1;
-          }
-        }
+        double pan = MotionStatus::m_CurrentJoints.GetAngle(JointData::ID_HEAD_PAN);
+        double pan_range = Head::GetInstance()->GetLeftLimitAngle();
+        double pan_percent = pan / pan_range;
+        if (pan < 0.4)
+          dir = -1;
+        else if (pan > 0.6)
+          dir = 1;
+
+        // lookAt.X = (positions[0].X + positions[1].X) / 2;
+        // lookAt.Y = (positions[0].Y + positions[1].Y) / 2;
+        // if (positions[0].X < positions[1].X) {
+        //   if (positions[0].Y < positions[1].Y - 50) {
+        //     dir = -1;
+        //   } else if (positions[1].Y < positions[0].Y - 50) {
+        //     dir = 1;
+        //   }
+        // } else {
+        //   if (positions[0].Y < positions[1].Y - 50) {
+        //     dir = 1;
+        //   } else if (positions[1].Y < positions[0].Y - 50) {
+        //     dir = -1;
+        //   }
+        // }
       }
     }
 
