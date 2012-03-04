@@ -123,7 +123,7 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
     unprocessed.pop();
   }
 
-  if(count <= (m_result->m_NumberOfPixels * m_min_percent / 100) ||
+  if(count == 0 || count <= (m_result->m_NumberOfPixels * m_min_percent / 100) ||
      count > (m_result->m_NumberOfPixels * m_max_percent / 100))
   {
     x_center->X = -1.0;
@@ -133,7 +133,7 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
   {
     x_center->X = (int)((double)sum_x / (double)count);
     x_center->Y = (int)((double)sum_y / (double)count);
-    printf("Adding an X: %d, %d\n", (int)x_center->X, (int)x_center->Y);
+//    printf("Adding an X: %d, %d\n", (int)x_center->X, (int)x_center->Y);
   }
 }
 
