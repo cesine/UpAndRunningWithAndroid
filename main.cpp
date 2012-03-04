@@ -106,7 +106,6 @@ int main(void)
 
     Point2D lookAt(-1, -1);
     Point2D walkTo(-1, -1);
-    bool walking = false;
     if (nbXFound > 0) {
       if (nbXFound >= 4) {
         printf("Found %d, average and go!\n", nbXFound);
@@ -152,15 +151,9 @@ int main(void)
     // }
 
     tracker.Process(lookAt);
-    follower.Process(walkTo);
-//     if (walkTo.X < 0) {
-//       if (walking)
-//         follower.Process(walkTo);
-// //      walking = false;
-//     } else {
-//       follower.Process(walkTo);
-//       walking = true;
-//     }
+    if (follower.m_NoBallCount <= follower.m_NoBallMaxCount) {
+      follower.Process(walkTo);
+    }
 
     // Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
     // Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0;
