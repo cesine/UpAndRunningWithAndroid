@@ -175,7 +175,7 @@ int main(void)
       printf("Failure!");
       nbFailed = 10;
       Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-      Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0 * dir;
+      Walking::GetInstance()->A_MOVE_AMPLITUDE = 0.0;
       Walking::GetInstance()->Start();
     } else {
       printf("Success!");
