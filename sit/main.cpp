@@ -26,9 +26,9 @@
 #include "LinuxActionScript.h"
 
 #ifdef MX28_1024
-#define MOTION_FILE_PATH    "../../../../Data/motion_1024.bin"
+#define MOTION_FILE_PATH    "../../../../../Data/motion_1024.bin"
 #else
-#define MOTION_FILE_PATH    "../../../../Data/motion_4096.bin"
+#define MOTION_FILE_PATH    "../../../../../Data/motion_4096.bin"
 #endif
 
 void change_current_dir()
@@ -60,12 +60,11 @@ int main(void)
 
     MotionManager::GetInstance()->SetEnable(true);
 
-    while ( true )
-    {
-	    printf("Action number?: ");
-	    int g; scanf("%d", &g);
-	    Action::GetInstance()->Start(g);
-    }
+    Action::GetInstance()->Start(1);    /* Init(stand up) pose */
+    while(Action::GetInstance()->IsRunning()) usleep(8*1000);
+
+    printf("Press the ENTER key to begin!\n");
+    getchar();
 
     return 0;
 }

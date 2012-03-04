@@ -9,11 +9,11 @@
 
 #include "XFinder.h"
 #include "ImgProcess.h"
+#include <queue>
 
 using namespace Robot;
 
 XFinder::XFinder() :
-        m_center_point(Point2D()),
         m_hue(356),
         m_hue_tolerance(15),
         m_min_saturation(50),
@@ -21,7 +21,8 @@ XFinder::XFinder() :
         m_min_percent(0.07),
         m_max_percent(30.0),
         color_section(""),
-        m_result(0)
+        m_result(0),
+        m_visited(0)
 { }
 
 XFinder::XFinder(int hue, int hue_tol, int min_sat, int min_val, double min_per, double max_per) :
@@ -32,7 +33,8 @@ XFinder::XFinder(int hue, int hue_tol, int min_sat, int min_val, double min_per,
         m_min_percent(min_per),
         m_max_percent(max_per),
         color_section(""),
-        m_result(0)
+        m_result(0),
+        m_visited(0)
 { }
 
 XFinder::~XFinder()
@@ -88,6 +90,49 @@ void XFinder::Filtering(Image *img)
     }
 }
 
+
+void XFinder::FloodFill(int x, int y, Point2D* x_center)
+{
+  int sum_x = 0, sum_y = 0, count;
+
+  std::queue <Point2D> unprocessed;
+  unprocessed.push(Point2D(x, y));
+  
+  while (!unprocessed.empty()) {
+    Point2D& current = unprocessed.front();
+    sum_x += current.X;
+    sum_y += current.Y;
+    m_visited->m_ImageData[m_result->m_Width * current.Y + current.X];
+    count++;
+    for (int i = -1; i <= 1; i++) {
+      for (int j = -1; j <= 1 ; j++) {
+        if (i == 0 && j == 0) continue;
+        int nx = current.X + i;
+        int ny = current.Y + j;
+        if (nx < 0 || nx >= m_result->m_Width ||
+            ny < 0 || ny >= m_result->m_Height) continue;
+        if(m_result->m_ImageData[m_result->m_Width * ny + nx] > 0 &&
+           m_visited->m_ImageData[m_result->m_Width * ny + nx] == 0) {
+          unprocessed.push(Point2D(nx, ny));
+        }
+      }
+    }
+    unprocessed.pop();
+  }
+
+  if(count <= (m_result->m_NumberOfPixels * m_min_percent / 100) ||
+     count > (m_result->m_NumberOfPixels * m_max_percent / 100))
+  {
+      x_center->X = -1.0;
+      x_center->Y = -1.0;
+  }
+  else
+  {
+      x_center->X = (int)((double)sum_x / (double)count);
+      x_center->Y = (int)((double)sum_y / (double)count);
+  }
+}
+
 void XFinder::LoadINISettings(minIni* ini)
 {
     LoadINISettings(ini, COLOR_SECTION);
@@ -125,38 +170,32 @@ void XFinder::SaveINISettings(minIni* ini, const std::string &section)
     color_section = section;
 }
 
-Point2D& XFinder::GetPosition(Image* hsv_img)
+int XFinder::GetPositions(Image* hsv_img, Point2D* results)
 {
-    int sum_x = 0, sum_y = 0, count = 0;
+  int nbXFound = 0;
 
-    Filtering(hsv_img);
+  Filtering(hsv_img);
 
-    ImgProcess::Erosion(m_result);
-    ImgProcess::Dilation(m_result);
+  ImgProcess::Erosion(m_result);
+  ImgProcess::Dilation(m_result);
 
-    for(int y = 0; y < m_result->m_Height; y++)
+  if(m_visited == NULL)
+    m_visited = new Image(m_result->m_Width, m_result->m_Height, 1);
+
+  for(int y = 0; y < m_result->m_Height; y++)
+  {
+    for(int x = 0; x < m_result->m_Width; x++)
     {
-        for(int x = 0; x < m_result->m_Width; x++)
-        {
-            if(m_result->m_ImageData[m_result->m_Width * y + x] > 0)
-            {
-                sum_x += x;
-                sum_y += y;
-                count++;
-            }
+      if(m_result->m_ImageData[m_result->m_Width * y + x] > 0 &&
+         m_visited->m_ImageData[m_result->m_Width * y + x] == 0)
+      {
+        FloodFill(x, y, &results[nbXFound]);
+        if (results[nbXFound].X >= 0) {
+          nbXFound++;
         }
+      }
     }
+  }
 
-    if(count <= (hsv_img->m_NumberOfPixels * m_min_percent / 100) || count > (hsv_img->m_NumberOfPixels * m_max_percent / 100))
-    {
-        m_center_point.X = -1.0;
-        m_center_point.Y = -1.0;
-    }
-    else
-    {
-        m_center_point.X = (int)((double)sum_x / (double)count);
-        m_center_point.Y = (int)((double)sum_y / (double)count);
-    }
-
-    return m_center_point;
+  return nbXFound;
 }
