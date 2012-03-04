@@ -110,12 +110,12 @@ int main(void)
 	if (nbXFound > 3) {
 	  int SumX = 0, SumY = 0;
 	  for ( int i = 0 ; i < nbXFound ; i++ ) {
-	    SumX += positions[i].x ;
-		SumY += positions[i].y;
+	    SumX += positions[i].X ;
+		SumY += positions[i].Y;
       }
 
-	  lookAt.x = SumX / nbXFound;
-	  lookAt.y = SumY / nbXFound;
+	  lookAt.X = SumX / nbXFound;
+	  lookAt.Y = SumY / nbXFound;
 	  walkTo = lookAt;
 	}
 
