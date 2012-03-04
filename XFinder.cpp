@@ -5,6 +5,8 @@
  *      Author: zerom
  */
 
+
+#include <string.h>
 #include <stdlib.h>
 
 #include "XFinder.h"
