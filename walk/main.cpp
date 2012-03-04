@@ -31,6 +31,8 @@
 #define MOTION_FILE_PATH    "../../../../../Data/motion_4096.bin"
 #endif
 
+#define U2D_DEV_NAME        "/dev/ttyUSB0"
+
 void change_current_dir()
 {
 		char exepath[1024] = {0};
