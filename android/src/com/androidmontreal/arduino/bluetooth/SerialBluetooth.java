@@ -178,7 +178,7 @@ public class SerialBluetooth extends ListActivity
 								mOutput.append(text);
 								mOutput.newLine();
 								mOutput.flush();
-								mTextEntries.add("> " + text);
+								//mTextEntries.add("> " + text);
 							}else{
 								throw new IOException("No Output Stream");
 							}
@@ -189,7 +189,7 @@ public class SerialBluetooth extends ListActivity
 							{
 								public void run()
 								{
-									mTextEntries.add("! Failed to send message: " + errMsg);
+									//mTextEntries.add("! Failed to send message: " + errMsg);
 								}
 							});
 						}
@@ -201,8 +201,8 @@ public class SerialBluetooth extends ListActivity
 						try{
 							if(mInput != null && mInput.ready()){
 								String text = mInput.readLine();
-								if(text != null)
-									mTextEntries.add("< " + text);
+//								if(text != null)
+									//mTextEntries.add("< " + text);
 							}
 						}
 						catch(IOException e){
@@ -211,7 +211,7 @@ public class SerialBluetooth extends ListActivity
 							{
 								public void run()
 								{
-									mTextEntries.add("! Failed to recv message: " + errMsg);
+//									mTextEntries.add("! Failed to recv message: " + errMsg);
 								}
 							});
 						}
