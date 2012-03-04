@@ -96,6 +96,7 @@ int main(void)
   MotionManager::GetInstance()->SetEnable(true);
 
   Point2D positions[100];
+  int nbFailed = 0;
   while(1)
   {
     LinuxCamera::GetInstance()->CaptureFrame();
@@ -172,6 +173,7 @@ int main(void)
       Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0 * dir;
       Walking::GetInstance()->Start();
     } else {
+      nbFailed = 0;
       follower.Process(walkTo);
     }
 
