@@ -133,7 +133,7 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
   {
     x_center->X = (int)((double)sum_x / (double)count);
     x_center->Y = (int)((double)sum_y / (double)count);
-//    printf("Adding an X: %d, %d\n", (int)x_center->X, (int)x_center->Y);
+    printf("Adding an X: %d, %d\n", (int)x_center->X, (int)x_center->Y);
   }
 }
 
@@ -186,7 +186,7 @@ int XFinder::GetPositions(Image* hsv_img, Point2D* results)
   if(m_visited == NULL)
     m_visited = new Image(m_result->m_Width, m_result->m_Height, 1);
   else {
-//    memset(m_visited, 0, m_visited->m_Width*m_visited->m_Height);
+    memset(m_visited->m_ImageData, 0, m_visited->m_Width*m_visited->m_Height);
   }
 
   for(int y = 0; y < m_result->m_Height; y++)
