@@ -167,8 +167,6 @@ int main(void)
       }
     }
 
-	printf ("Here\n");
-
     streamer->send_image(rgb_ball);
   }
 
