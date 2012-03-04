@@ -122,7 +122,7 @@ int main(void)
     //   }
     // }
 
-    follower.Process(walkTo);
+    //follower.Process(walkTo);
     tracker.Process(lookAt);
 
     // Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
