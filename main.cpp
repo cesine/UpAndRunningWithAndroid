@@ -19,7 +19,6 @@
 
 using namespace Robot;
 
-
 void change_current_dir()
 {
   char exepath[1024] = {0};
@@ -59,7 +58,7 @@ int main(void)
       return 0;
   }
   MotionManager::GetInstance()->AddModule((MotionModule*)Head::GetInstance());
-  MotionManager::GetInstance()->AddModule((MotionModule*)Walking::GetInstance());
+  //MotionManager::GetInstance()->AddModule((MotionModule*)Walking::GetInstance());
   LinuxMotionTimer::Initialize(MotionManager::GetInstance()); 
   /////////////////////////////////////////////////////////////////////
 
@@ -67,7 +66,7 @@ int main(void)
   int param[JointData::NUMBER_OF_JOINTS * 5];
   int wGoalPosition, wStartPosition, wDistance;
 
-  for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
+  /*for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
   {
     wStartPosition = MotionStatus::m_CurrentJoints.GetValue(id);
     wGoalPosition = Walking::GetInstance()->m_Joint.GetValue(id);
@@ -86,7 +85,7 @@ int main(void)
     param[n++] = CM730::GetLowByte(wDistance);
     param[n++] = CM730::GetHighByte(wDistance);
   }
-  cm730.SyncWrite(MX28::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);  
+  cm730.SyncWrite(MX28::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);  */
 
   printf("Press the ENTER key to begin!\n");
   getchar();
@@ -96,6 +95,7 @@ int main(void)
   MotionManager::GetInstance()->SetEnable(true);
 
   Point2D positions[100];
+  bool g = false;
   while(1)
   {
     LinuxCamera::GetInstance()->CaptureFrame();
@@ -104,34 +104,50 @@ int main(void)
 
     int nbXFound = ball_finder->GetPositions(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame, positions);
 
-    Point2D pointToTrack(-1, -1);
-    if (nbXFound > 0) {
-      printf("nbXFound: %d\n", nbXFound);
-      int maxY = ball_finder->m_result->m_Width * 75 / 100;
-      for (int i = 0; i < nbXFound; ++i) {
-        if (positions[i].Y < maxY && positions[i].Y > pointToTrack.Y) {
-          pointToTrack = positions[i];
-        }
-      }
-    }      
-    tracker.Process(pointToTrack);
-//    follower.Process(pointToTrack);
+    Point2D lookAt(-1, -1);
+    Point2D walkTo(-1, -1);
 
-    Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-    Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0;
-    Walking::GetInstance()->Start();
+	if (nbXFound > 3) {
+	  int SumX = 0, SumY = 0;
+	  for ( int i = 0 ; i < nbXFound ; i++ ) {
+	    SumX += positions[i].X ;
+		SumY += positions[i].Y;
+      }
+
+	  lookAt.X = SumX / nbXFound;
+	  lookAt.Y = SumY / nbXFound;
+	  walkTo = lookAt;
+	}
+
+    // if (nbXFound > 0) {
+    //   printf("nbXFound: %d\n", nbXFound);
+    //   int maxY = ball_finder->m_result->m_Width * 75 / 100;
+    //   for (int i = 0; i < nbXFound; ++i) {
+    //     if (positions[i].Y < maxY && positions[i].Y > pointToTrack.Y) {
+    //       pointToTrack = positions[i];
+    //     }
+    //   }
+    // }
+
+    //follower.Process(walkTo);
+    tracker.Process(lookAt);
+
+    // Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
+    // Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0;
+    // Walking::GetInstance()->Start();
 
     for(int i = 0; i < rgb_ball->m_NumberOfPixels; i++)
     {
       if(ball_finder->m_result->m_ImageData[i] == 1)
       {
-        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 0] = 255;
-        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 1] = 0;
+        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 0] = 255 * !g;
+        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 1] = 255 *  g;
         rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 2] = 0;
       }
     }
 
     streamer->send_image(rgb_ball);
+	g = !g;
   }
 
   return 0;
