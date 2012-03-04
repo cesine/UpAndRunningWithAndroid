@@ -137,12 +137,12 @@ int main(void)
         printf("Found 2!\n");
         lookAt.X = (positions[0].X + positions[1].X) / 2;
         lookAt.Y = (positions[0].Y + positions[1].Y) / 2;
+        walkTo = lookAt;
       }
     }
 
     // if (nbXFound > 0) {
-    //   printf("nbXFound: %d\n", nbXFound);
-    //   int maxY = ball_finder->m_result->m_Width * 75 / 100;
+    //   printf("nbXFound: %d\n", nbXFound)   int maxY = ball_finder->m_result->m_Width * 75 / 100;
     //   for (int i = 0; i < nbXFound; ++i) {
     //     if (positions[i].Y < maxY && positions[i].Y > pointToTrack.Y) {
     //       pointToTrack = positions[i];
