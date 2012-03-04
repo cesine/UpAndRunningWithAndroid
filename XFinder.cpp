@@ -5,6 +5,8 @@
  *      Author: zerom
  */
 
+
+#include <string.h>
 #include <stdlib.h>
 
 #include "XFinder.h"
@@ -93,16 +95,16 @@ void XFinder::Filtering(Image *img)
 
 void XFinder::FloodFill(int x, int y, Point2D* x_center)
 {
-  int sum_x = 0, sum_y = 0, count;
+  int sum_x = 0, sum_y = 0, count = 0;
 
   std::queue <Point2D> unprocessed;
   unprocessed.push(Point2D(x, y));
+  m_visited->m_ImageData[m_result->m_Width * y + x] = 1;
   
   while (!unprocessed.empty()) {
     Point2D& current = unprocessed.front();
     sum_x += current.X;
     sum_y += current.Y;
-    m_visited->m_ImageData[m_result->m_Width * (int) current.Y + (int) current.X] = 1;
     count++;
     for (int i = -1; i <= 1; i++) {
       for (int j = -1; j <= 1 ; j++) {
@@ -113,6 +115,7 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
             ny < 0 || ny >= m_result->m_Height) continue;
         if(m_result->m_ImageData[m_result->m_Width * ny + nx] > 0 &&
            m_visited->m_ImageData[m_result->m_Width * ny + nx] == 0) {
+          m_visited->m_ImageData[m_result->m_Width * ny + nx] = 1;
           unprocessed.push(Point2D(nx, ny));
         }
       }
@@ -120,16 +123,16 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
     unprocessed.pop();
   }
 
-  if(count <= (m_result->m_NumberOfPixels * m_min_percent / 100) ||
+  if(count == 0 || count <= (m_result->m_NumberOfPixels * m_min_percent / 100) ||
      count > (m_result->m_NumberOfPixels * m_max_percent / 100))
   {
-      x_center->X = -1.0;
-      x_center->Y = -1.0;
+    x_center->X = -1.0;
+    x_center->Y = -1.0;
   }
   else
   {
-      x_center->X = (int)((double)sum_x / (double)count);
-      x_center->Y = (int)((double)sum_y / (double)count);
+    x_center->X = (int)((double)sum_x / (double)count);
+    x_center->Y = (int)((double)sum_y / (double)count);
   }
 }
 
@@ -181,6 +184,9 @@ int XFinder::GetPositions(Image* hsv_img, Point2D* results)
 
   if(m_visited == NULL)
     m_visited = new Image(m_result->m_Width, m_result->m_Height, 1);
+  else {
+    memset(m_visited->m_ImageData, 0, m_visited->m_Width*m_visited->m_Height);
+  }
 
   for(int y = 0; y < m_result->m_Height; y++)
   {

@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package com.example.android.BluetoothChat;
+package com.androidmontreal.arduino.bluetooth;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.hardware.Camera;
+import android.hardware.Camera.PictureCallback;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,14 +42,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidmontreal.opencv.OpenCVPreview;
+import com.androidmontreal.opencv.R;
+
 /**
  * This is the main Activity that displays the current chat session.
  */
-public class BluetoothChat extends Activity {
+public class RoogleTank extends Activity implements PictureCallback{
     // Debugging
-    private static final String TAG = "BluetoothChat";
+    private static final String TAG = "RoogleTank";
     private static final boolean D = true;
 
+    // OpenCV
+    private TextView textView1;
+
+    
     // Message types sent from the BluetoothChatService Handler
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
@@ -85,11 +95,19 @@ public class BluetoothChat extends Activity {
         super.onCreate(savedInstanceState);
         if(D) Log.e(TAG, "+++ ON CREATE +++");
 
+        
         // Set up the window layout
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.main);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
 
+        /* Create a TextView and set its content.
+         * the text is retrieved by calling a native
+         * function.
+         */
+        textView1 = (TextView) findViewById(R.id.textview1);
+        textView1.setText( stringFromJNI() );
+        
         // Set up the custom title
         mTitle = (TextView) findViewById(R.id.title_left_text);
         mTitle.setText(R.string.app_name);
@@ -104,8 +122,39 @@ public class BluetoothChat extends Activity {
             finish();
             return;
         }
+        
+        
+        getOpenCVResult(textView1);
     }
+    public void getOpenCVResult(View view){
+    	UpdateFromOpenCVTask getOpenCVResults = new UpdateFromOpenCVTask();
+        getOpenCVResults.execute(new String[] { "in execute" });
+    
+    }
+    private class UpdateFromOpenCVTask extends AsyncTask<String, Void, String> {
+		@Override
+		protected String doInBackground(String... urls) {
+			
+			Log.d(TAG,"Pausing 1 sec before calling again.");
+			// Loop every 1 sec
+			try {
+				new Thread().sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			getOpenCVResult(textView1);
+			
+			
+			String response = "hi in async";
+			response = ((RoogleTankApp) getApplication()).getLastMessage(); 
+			return response;
+		}
 
+		@Override
+		protected void onPostExecute(String result) {
+			textView1.setText(result);
+		}
+	}
     @Override
     public void onStart() {
         super.onStart();
@@ -139,6 +188,30 @@ public class BluetoothChat extends Activity {
         }
     }
 
+    public void onCaptureClick(View v) {
+		Button capture = (Button) findViewById(R.id.capture);
+		capture.setEnabled(false);
+
+		// Take picture
+		OpenCVPreview previewView = (OpenCVPreview) findViewById(R.id.preview);
+		Camera camera = previewView.getCamera();
+		camera.takePicture(null, null, this);
+
+    }
+    public void onPictureTaken(byte[] data, Camera camera) {
+		/*
+		 * Do some thing
+		 */
+		finish();
+	}
+    /* A native method that is implemented by the
+     * 'hello-jni' native library, which is packaged
+     * with this application.
+     */
+    public native String  stringFromJNI();
+    static {
+        System.loadLibrary("opencv_sample");
+    }
     private void setupChat() {
         Log.d(TAG, "setupChat()");
 

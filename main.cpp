@@ -29,7 +29,7 @@ void change_current_dir()
 
 int main(void)
 {
-  printf( "\n===== Ball following Tutorial for DARwIn =====\n\n");
+  printf( "\n===== Roogle's Dodo =====\n\n");
 
   change_current_dir();
 
@@ -96,6 +96,8 @@ int main(void)
   MotionManager::GetInstance()->SetEnable(true);
 
   Point2D positions[100];
+  int nbFailed = 0;
+  int nbSuccess = 0;
   while(1)
   {
     LinuxCamera::GetInstance()->CaptureFrame();
@@ -104,29 +106,96 @@ int main(void)
 
     int nbXFound = ball_finder->GetPositions(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame, positions);
 
+    Point2D lookAt(-1, -1);
+    Point2D walkTo(-1, -1);
+    int dir = 0;
     if (nbXFound > 0) {
-      tracker.Process(positions[0]);
-    } else {
-      tracker.Process(Point2D(-1, -1));
-    }
+      if (nbXFound >= 4) {
+        printf("Found %d, average and go!\n", nbXFound);
+        double sumX = 0, sumY = 0;
+        for (int i = 0; i < nbXFound; ++i) {
+          sumX += positions[i].X;
+          sumY += positions[i].Y;
+        }
+        lookAt.X = sumX / nbXFound;
+        lookAt.Y = sumY / nbXFound;
+        walkTo = lookAt;
+      } else if (nbXFound == 3) {
+        printf("Found 3, doing some vector arithmetic!\n");
+        double l01 = Point2D::Distance(positions[0], positions[1]);
+        double l12 = Point2D::Distance(positions[1], positions[2]);
+        double l02 = Point2D::Distance(positions[0], positions[2]);
+        // Find the longest one
+        int corner = 0;
+        if (l01 >= l12 && l01 >= l02)
+          corner = 2;
+        else if (l02 >= l01 && l02 >= l12)
+          corner = 1;
+        int p0 = (corner + 1) % 3;
+        int p1 = (corner + 2) % 3;
+        lookAt.X = (positions[p0].X + positions[p1].X) / 2;
+        lookAt.Y = (positions[p0].Y + positions[p1].Y) / 2;
+        walkTo = lookAt;
+      } else if (nbXFound == 2) {
+        printf("Found 2!\n");
+        double pan = MotionStatus::m_CurrentJoints.GetAngle(JointData::ID_HEAD_PAN);
+        double pan_range = Head::GetInstance()->GetLeftLimitAngle();
+        double pan_percent = pan / pan_range;
+        if (pan_percent < 0.4)
+          dir = -1;
+        else if (pan_percent > 0.6)
+          dir = 1;
 
-//    follower.Process(tracker.ball_position);
-
-//    Walking::GetInstance()->X_MOVE_AMPLITUDE = 1.0;
-//    Walking::GetInstance()->A_MOVE_AMPLITUDE = 0;
-//    Walking::GetInstance()->Start();
-
-    for(int i = 0; i < rgb_ball->m_NumberOfPixels; i++)
-    {
-      if(ball_finder->m_result->m_ImageData[i] == 1)
-      {
-        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 0] = 255;
-        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 1] = 0;
-        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 2] = 0;
+        // lookAt.X = (positions[0].X + positions[1].X) / 2;
+        // lookAt.Y = (positions[0].Y + positions[1].Y) / 2;
+        // if (positions[0].X < positions[1].X) {
+        //   if (positions[0].Y < positions[1].Y - 50) {
+        //     dir = -1;
+        //   } else if (positions[1].Y < positions[0].Y - 50) {
+        //     dir = 1;
+        //   }
+        // } else {
+        //   if (positions[0].Y < positions[1].Y - 50) {
+        //     dir = 1;
+        //   } else if (positions[1].Y < positions[0].Y - 50) {
+        //     dir = -1;
+        //   }
+        // }
       }
     }
 
-    streamer->send_image(rgb_ball);
+    // if (nbXFound > 0) {
+    //   printf("nbXFound: %d\n", nbXFound);
+    //   int maxY = ball_finder->m_result->m_Width * 75 / 100;
+    //   for (int i = 0; i < nbXFound; ++i) {
+    //     if (positions[i].Y < maxY && positions[i].Y > pointToTrack.Y) {
+    //       pointToTrack = positions[i];
+    //     }
+    //   }
+    // }
+
+    tracker.Process(lookAt);
+    follower.Process(walkTo);
+    // if (walkTo.X < 0) {
+    //   nbFailed++;
+    //   nbSuccess = 0;
+    // } else {
+    //   nbSuccess++;
+    //   nbFailed = 0;
+    // }
+    // if (nbFailed >= 10) {
+    //   nbFailed = 10;
+    //   dir = 0;
+    //   Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
+    //   Walking::GetInstance()->A_MOVE_AMPLITUDE = dir * 20.0;
+    //   if (dir == 0)
+    //     Walking::GetInstance()->Stop();
+    //   else
+    //     Walking::GetInstance()->Start();
+    // } else if (nbSuccess >= 10){
+    //   nbSuccess = 10;
+    //   follower.Process(walkTo);
+    // }
   }
 
   return 0;
