@@ -147,7 +147,7 @@ int main(void)
       }
     }
 
-	usleep(2000);
+	usleep(20000);
 
     streamer->send_image(rgb_ball);
 	g = !g;
