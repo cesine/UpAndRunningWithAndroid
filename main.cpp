@@ -110,6 +110,7 @@ int main(void)
 	if (nbXFound > 0) {
 	  lookAt = positions[0];
 	  walkTo = lookAt;
+	}
 
     // if (nbXFound > 0) {
     //   printf("nbXFound: %d\n", nbXFound);
