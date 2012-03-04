@@ -19,7 +19,6 @@
 
 using namespace Robot;
 
-
 void change_current_dir()
 {
   char exepath[1024] = {0};
@@ -96,6 +95,7 @@ int main(void)
   MotionManager::GetInstance()->SetEnable(true);
 
   Point2D positions[100];
+  bool g = false;
   while(1)
   {
     LinuxCamera::GetInstance()->CaptureFrame();
@@ -136,15 +136,18 @@ int main(void)
     // Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0;
     // Walking::GetInstance()->Start();
 
+    printf("Now seeing %s\n", g ? "blue" : "red");
     for(int i = 0; i < rgb_ball->m_NumberOfPixels; i++)
     {
       if(ball_finder->m_result->m_ImageData[i] == 1)
       {
-        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 0] = 255;
-        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 1] = 0;
+        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 0] = 255 * !g;
+        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 1] = 255 *  g;
         rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 2] = 0;
       }
     }
+
+	usleep(5);
 
     streamer->send_image(rgb_ball);
   }
