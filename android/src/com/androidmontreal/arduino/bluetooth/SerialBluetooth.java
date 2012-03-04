@@ -5,11 +5,13 @@ import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.text.Editable;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -17,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -37,6 +40,9 @@ public class SerialBluetooth extends ListActivity
 	private Button mSendButton;
 	private EditText mInputBox;
 	
+	 // OpenCV
+    private TextView textView1;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -46,6 +52,14 @@ public class SerialBluetooth extends ListActivity
 //		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.text_activity_layout);
 //		getListView().setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+		
+		/* Create a TextView and set its content.
+         * the text is retrieved by calling a native
+         * function.
+         */
+        textView1 = (TextView) findViewById(R.id.textview1);
+        
+        
 		
 		mTextEntries = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
 		mTextEntries.add("Each message sent and received will appear below.");
@@ -73,8 +87,40 @@ public class SerialBluetooth extends ListActivity
 			finish();
 			return;
 		}
+		
+		getOpenCVResult(textView1);
 	}
 	
+	
+	private class UpdateFromOpenCVTask extends AsyncTask<String, Void, String> {
+		@Override
+		protected String doInBackground(String... urls) {
+			
+			Log.d(TAG,"Pausing 1 sec before calling again.");
+			// Loop every 1 sec
+			try {
+				new Thread().sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			getOpenCVResult(textView1);
+			
+			
+			String response = "hi in async";
+			response = ((RoogleTankApp) getApplication()).getLastMessage(); 
+			return response;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			textView1.setText(result);
+		}
+	}
+	public void getOpenCVResult(View view){
+    	UpdateFromOpenCVTask getOpenCVResults = new UpdateFromOpenCVTask();
+        getOpenCVResults.execute(new String[] { "in execute" });
+    
+    }
 	@Override
 	protected void onStop()
 	{
