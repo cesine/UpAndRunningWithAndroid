@@ -25,7 +25,6 @@
 			android:inputType="textMultiLine"
 			android:imeOptions="actionSend|flagNoEnterAction"
 			android:textAppearance="?android:attr/textAppearanceSmall"
-			android:background="@drawable/input_background"
 			android:padding="5dp"
 			/>
 	 	<Button
@@ -34,7 +33,7 @@
 			android:layout_height="wrap_content"
 			android:layout_alignRight="@id/input_box"
 			android:layout_margin="3dp"
-			android:text="@string/send_text"
+			android:text="Send"
 			android:paddingLeft="25dp"
 			android:paddingRight="25dp"
 			android:paddingTop="10dp"

@@ -59,7 +59,7 @@ public class SerialBluetooth extends ListActivity
 		mSendButton.setOnClickListener(mSendClicked);
 		
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-		mBtDevice  = mBtAdapter.getRemoteDevice(getIntent().getStringExtra("device"));
+		mBtDevice  = mBtAdapter.getRemoteDevice("00:19:5D:EE:28:36");
 		
 		setConnectedState(false);
 		
