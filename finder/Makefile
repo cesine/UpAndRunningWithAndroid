@@ -9,7 +9,7 @@
 
 TARGET = roogle_hack
 
-INCLUDE_DIRS = -I../../../include -I../../../../Framework/include
+INCLUDE_DIRS = -I../../../../include -I../../../../../Framework/include
 
 CXX = g++
 CXXFLAGS += -O2 -DLINUX -Wall $(INCLUDE_DIRS)
@@ -24,10 +24,10 @@ clean:
 	rm -f *.a *.o $(TARGET) core *~ *.so *.lo
 
 darwin.a:
-	make -C ../../../build
+	make -C ../../../../build
 
 $(TARGET): darwin.a $(OBJECTS)
-	$(CXX) $(CFLAGS) $(LFLAGS) $(OBJECTS) ../../../lib/darwin.a -o $(TARGET)
+	$(CXX) $(CFLAGS) $(LFLAGS) $(OBJECTS) ../../../../lib/darwin.a -o $(TARGET)
 	chmod 755 $(TARGET)
 
 # useful to make a backup "make tgz"
