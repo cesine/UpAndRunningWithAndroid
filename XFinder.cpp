@@ -129,9 +129,9 @@ void XFinder::FloodFill(int x, int y, Point2D* x_center)
   }
   else
   {
-    printf("Adding an X!\n");
     x_center->X = (int)((double)sum_x / (double)count);
     x_center->Y = (int)((double)sum_y / (double)count);
+    printf("Adding an X: %d, %d\n", x_center->X, x_center->Y);
   }
 }
 
