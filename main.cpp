@@ -141,8 +141,7 @@ int main(void)
     }
 
     // if (nbXFound > 0) {
-    //   printf("nbXFound: %d\n", nbXFound);
-    //   int maxY = ball_finder->m_result->m_Width * 75 / 100;
+    //   printf("nbXFound: %d\n", nbXFound)   int maxY = ball_finder->m_result->m_Width * 75 / 100;
     //   for (int i = 0; i < nbXFound; ++i) {
     //     if (positions[i].Y < maxY && positions[i].Y > pointToTrack.Y) {
     //       pointToTrack = positions[i];
