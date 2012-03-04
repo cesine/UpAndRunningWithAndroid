@@ -175,26 +175,27 @@ int main(void)
     // }
 
     tracker.Process(lookAt);
-    if (walkTo.X < 0) {
-      nbFailed++;
-      nbSuccess = 0;
-    } else {
-      nbSuccess++;
-      nbFailed = 0;
-    }
-    if (nbFailed >= 10) {
-      nbFailed = 10;
-      dir = 0;
-      Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
-      Walking::GetInstance()->A_MOVE_AMPLITUDE = dir * 20.0;
-      if (dir == 0)
-        Walking::GetInstance()->Stop();
-      else
-        Walking::GetInstance()->Start();
-    } else if (nbSuccess >= 10){
-      nbSuccess = 10;
-      follower.Process(walkTo);
-    }
+    follower.Process(walkTo);
+    // if (walkTo.X < 0) {
+    //   nbFailed++;
+    //   nbSuccess = 0;
+    // } else {
+    //   nbSuccess++;
+    //   nbFailed = 0;
+    // }
+    // if (nbFailed >= 10) {
+    //   nbFailed = 10;
+    //   dir = 0;
+    //   Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
+    //   Walking::GetInstance()->A_MOVE_AMPLITUDE = dir * 20.0;
+    //   if (dir == 0)
+    //     Walking::GetInstance()->Stop();
+    //   else
+    //     Walking::GetInstance()->Start();
+    // } else if (nbSuccess >= 10){
+    //   nbSuccess = 10;
+    //   follower.Process(walkTo);
+    // }
   }
 
   return 0;
