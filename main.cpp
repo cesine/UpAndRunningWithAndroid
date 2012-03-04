@@ -155,7 +155,7 @@ int main(void)
     if (walkTo.X >= 0) {
       if (walking)
         follower.Process(walkTo);
-      walking = false
+      walking = false;
     } else {
       walking = true;
     }
