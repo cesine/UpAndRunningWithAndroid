@@ -166,7 +166,11 @@ int main(void)
     // }
 
     tracker.Process(lookAt);
-    if (walkTo.X < 0) nbFailed++;
+    if (walkTo.X < 0) {
+      nbFailed++;
+    } else {
+      nbFailed = 0;
+    }
     if (nbFailed >= 8) {
       printf("Failure!");
       nbFailed = 10;
@@ -175,7 +179,6 @@ int main(void)
       Walking::GetInstance()->Start();
     } else {
       printf("Success!");
-      nbFailed = 0;
       follower.Process(walkTo);
     }
   }
