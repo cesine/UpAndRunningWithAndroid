@@ -66,7 +66,7 @@ extern "C" {
 	int imageXheight = mbgra.size[0];
 
 	 vector<vector<Point> > items;
-	 string resultsIfAny = colorSomeStuff(mbgra);
+	 string resultsIfAny = trackRed(mbgra);
 
 	 env->ReleaseIntArrayElements(bgra, _bgra, 0);
 	 env->ReleaseByteArrayElements(yuv, _yuv, 0);

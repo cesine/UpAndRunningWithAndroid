@@ -373,6 +373,7 @@ public class BluetoothChatService {
 			// given BluetoothDevice
 			try {
 				tmp = device.createRfcommSocketToServiceRecord(SERIAL_PORT_PROFILE_DEFAULT_UUID);
+				
 			} catch (IOException e) {
 				Log.e(TAG, "create() failed", e);
 			}

@@ -1,6 +1,7 @@
 main\.o
 roogle_hack
 
+.DS_Store
 .project
 .classpath
 .settings
