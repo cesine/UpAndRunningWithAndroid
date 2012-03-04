@@ -103,9 +103,9 @@ int main(void)
     memcpy(rgb_ball->m_ImageData, LinuxCamera::GetInstance()->fbuffer->m_RGBFrame->m_ImageData, LinuxCamera::GetInstance()->fbuffer->m_RGBFrame->m_ImageSize);
 
     int nbXFound = ball_finder->GetPositions(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame, positions);
-    printf("nbXFound: %d\n", nbXFound);
 
     if (nbXFound > 0) {
+      printf("nbXFound: %d\n", nbXFound);
       tracker.Process(positions[0]);
     } else {
       tracker.Process(Point2D(-1, -1));
