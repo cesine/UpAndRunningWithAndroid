@@ -167,7 +167,7 @@ int main(void)
 
     tracker.Process(lookAt);
     if (walkTo.X < 0) nbFailed++;
-    if (nbFailed >= 10) {
+    if (nbFailed >= 8) {
       nbFailed = 10;
       Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
       Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0 * dir;
@@ -176,18 +176,6 @@ int main(void)
       nbFailed = 0;
       follower.Process(walkTo);
     }
-
-    for(int i = 0; i < rgb_ball->m_NumberOfPixels; i++)
-    {
-      if(ball_finder->m_result->m_ImageData[i] == 1)
-      {
-        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 0] = 255;
-        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 1] = 0;
-        rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 2] = 0;
-      }
-    }
-
-    streamer->send_image(rgb_ball);
   }
 
   return 0;
