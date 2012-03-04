@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Must have $ROBOT_KEY inset to the robot's key on MyRobots.com
+#
+# Expects one command line parameter. The robot's status.
+
+url="http://bots.myrobots.com/update?key="$ROBOT_KEY"&status="$1
+
+# stores the result in .temp
+wget $url -O .temp
+
+# deletes .temp
+rm .temp
