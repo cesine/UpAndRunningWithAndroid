@@ -97,6 +97,7 @@ int main(void)
 
   Point2D positions[100];
   int nbFailed = 0;
+  int nbSuccess = 0;
   while(1)
   {
     LinuxCamera::GetInstance()->CaptureFrame();
@@ -176,10 +177,12 @@ int main(void)
     tracker.Process(lookAt);
     if (walkTo.X < 0) {
       nbFailed++;
+      nbSuccess = 0;
     } else {
+      nbSuccess++;
       nbFailed = 0;
     }
-    if (nbFailed >= 8) {
+    if (nbFailed >= 10) {
       nbFailed = 10;
       Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
       Walking::GetInstance()->A_MOVE_AMPLITUDE = dir * 20.0;
@@ -187,7 +190,8 @@ int main(void)
         Walking::GetInstance()->Stop();
       else
         Walking::GetInstance()->Start();
-    } else {
+    } else if (nbSuccess >= 10){
+      nbSuccess = 10;
       follower.Process(walkTo);
     }
   }
