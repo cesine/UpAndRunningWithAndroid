@@ -168,11 +168,13 @@ int main(void)
     tracker.Process(lookAt);
     if (walkTo.X < 0) nbFailed++;
     if (nbFailed >= 8) {
+      printf("Failure!");
       nbFailed = 10;
       Walking::GetInstance()->X_MOVE_AMPLITUDE = 0.0;
       Walking::GetInstance()->A_MOVE_AMPLITUDE = 20.0 * dir;
       Walking::GetInstance()->Start();
     } else {
+      printf("Success!");
       nbFailed = 0;
       follower.Process(walkTo);
     }
