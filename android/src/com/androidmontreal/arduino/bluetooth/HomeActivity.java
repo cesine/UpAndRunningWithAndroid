@@ -95,11 +95,8 @@ public class HomeActivity extends Activity {
 
 		if (D)
 			Log.e(TAG, "+++ ON CREATE +++");
-		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 
 		setContentView(R.layout.main);
-		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
-				R.layout.custom_title);
 
 		/*
 		 * Create a TextView and set its content. the text is retrieved by
@@ -108,15 +105,7 @@ public class HomeActivity extends Activity {
 		textView1 = (TextView) findViewById(R.id.textview1);
 		// textView1.setText( stringFromJNI() );
 
-		// Set up the custom title
-		mTitle = (TextView) findViewById(R.id.title_left_text);
-		mTitle.setText(R.string.app_name);
-		mTitle = (TextView) findViewById(R.id.title_right_text);
-
-		// new CopyAssetsTask().execute();
-		// ActionBar actionBar = getActionBar();
-		// actionBar.setDisplayHomeAsUpEnabled(true);
-		
+	
 		// Initialize the compose field with a listener for the return key
         mOutEditText = (EditText) findViewById(R.id.edit_text_out);
         mOutEditText.setOnEditorActionListener(mWriteListener);
@@ -372,10 +361,11 @@ public class HomeActivity extends Activity {
 	
 
 	private final void setStatus(CharSequence subTitle) {
-		mTitle.setText(R.string.title_connected_to);
-		mTitle.append(mConnectedDeviceName);
-		// final ActionBar actionBar = getActionBar();
-		// actionBar.setSubtitle(subTitle);
+
+		Toast.makeText(
+				this,
+				subTitle,
+				Toast.LENGTH_LONG).show();
 	}
 
 	private void connectDevice(String address, boolean secure, boolean serial) {
