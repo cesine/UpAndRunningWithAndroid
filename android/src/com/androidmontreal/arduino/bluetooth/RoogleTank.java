@@ -99,9 +99,10 @@ public class RoogleTank extends Activity implements PictureCallback{
         if(D) Log.e(TAG, "+++ ON CREATE +++");
 
         
-        String sdk = android.os.Build.VERSION.SDK;
-        if(sdk.contains("1")){
-        	//Use the Action Bar instead
+        String sdkstring = android.os.Build.VERSION.SDK;
+        int sdk = Integer.parseInt(sdkstring);
+        if(sdk > 10){
+        	//Use the Action Bar instead for 10,11,12,13 etc
         	 useTitleFeature = false;
         }else{
         	 useTitleFeature = true;
