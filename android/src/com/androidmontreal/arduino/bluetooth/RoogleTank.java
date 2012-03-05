@@ -77,6 +77,9 @@ public class RoogleTank extends Activity implements PictureCallback{
     private ListView mConversationView;
     private EditText mOutEditText;
     private Button mSendButton;
+    
+    // Display bluetooth status in the title bar
+    boolean useTitleFeature = false;
 
     // Name of the connected device
     private String mConnectedDeviceName = null;
@@ -96,11 +99,21 @@ public class RoogleTank extends Activity implements PictureCallback{
         if(D) Log.e(TAG, "+++ ON CREATE +++");
 
         
+        String sdk = android.os.Build.VERSION.SDK;
+        if(sdk.contains("1")){
+        	//Use the Action Bar instead
+        	 useTitleFeature = false;
+        }else{
+        	 useTitleFeature = true;
+        }
         // Set up the window layout
-        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        if(useTitleFeature) {
+        	useTitleFeature = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        }
         setContentView(R.layout.main);
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
-
+        if(useTitleFeature){
+        	getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
+        }
         /* Create a TextView and set its content.
          * the text is retrieved by calling a native
          * function.
@@ -109,10 +122,11 @@ public class RoogleTank extends Activity implements PictureCallback{
         textView1.setText( stringFromJNI() );
         
         // Set up the custom title
-        mTitle = (TextView) findViewById(R.id.title_left_text);
-        mTitle.setText(R.string.app_name);
-        mTitle = (TextView) findViewById(R.id.title_right_text);
-
+        if(useTitleFeature){
+	        mTitle = (TextView) findViewById(R.id.title_left_text);
+	        mTitle.setText(R.string.app_name);
+	        mTitle = (TextView) findViewById(R.id.title_right_text);
+        }
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -318,16 +332,22 @@ public class RoogleTank extends Activity implements PictureCallback{
                 if(D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                 switch (msg.arg1) {
                 case BluetoothChatService.STATE_CONNECTED:
-                    mTitle.setText(R.string.title_connected_to);
-                    mTitle.append(mConnectedDeviceName);
+                	if(useTitleFeature){
+                		mTitle.setText(R.string.title_connected_to);
+                		mTitle.append(mConnectedDeviceName);
+                    }
                     mConversationArrayAdapter.clear();
                     break;
                 case BluetoothChatService.STATE_CONNECTING:
-                    mTitle.setText(R.string.title_connecting);
+                	if(useTitleFeature){
+                		mTitle.setText(R.string.title_connecting);
+                	}
                     break;
                 case BluetoothChatService.STATE_LISTEN:
                 case BluetoothChatService.STATE_NONE:
-                    mTitle.setText(R.string.title_not_connected);
+                	if(useTitleFeature){
+                		mTitle.setText(R.string.title_not_connected);
+                	}
                     break;
                 }
                 break;
