@@ -53,7 +53,7 @@ public class RoogleTank extends Activity implements PictureCallback{
     private static final String TAG = "RoogleTank";
     private static final boolean D = true;
 
-    // OpenCV
+    // OpenCV results view
     private TextView textView1;
 
     

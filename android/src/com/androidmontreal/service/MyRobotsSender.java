@@ -1,4 +1,4 @@
-package com.androidmontreal.commander;
+package com.androidmontreal.service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

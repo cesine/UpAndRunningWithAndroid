@@ -49,7 +49,7 @@
            
         </activity>
         
-        <service android:enabled="true" android:name="com.androidmontreal.commander.MyRobotsSender"/>
+        <service android:enabled="true" android:name="com.androidmontreal.service.MyRobotsSender"/>
     </application>
 
 </manifest>

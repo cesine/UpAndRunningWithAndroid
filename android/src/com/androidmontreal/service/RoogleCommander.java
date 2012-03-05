@@ -1,4 +1,4 @@
-package com.androidmontreal.commander;
+package com.androidmontreal.service;
 
 import android.app.Activity;
 import android.content.Intent;
