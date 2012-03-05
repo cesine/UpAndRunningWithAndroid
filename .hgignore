@@ -1,11 +1,22 @@
 main\.o
 roogle_hack
 
+.o
+.so
+.class
+
 .DS_Store
+.swp
+
 .project
 .classpath
 .settings
 .externalToolBuilders
+
+
+.tar
+.jar
+.zip
 
 libs
 obj
