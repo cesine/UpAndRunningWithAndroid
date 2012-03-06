@@ -55,6 +55,7 @@ public class RoogleTank extends Activity implements PictureCallback{
 
     // OpenCV results view
     private TextView textView1;
+    private boolean stopUpdatingInBackground = false;
 
     
     // Message types sent from the BluetoothChatService Handler
@@ -138,7 +139,7 @@ public class RoogleTank extends Activity implements PictureCallback{
             return;
         }
         
-        
+        stopUpdatingInBackground = false;
         getOpenCVResult(textView1);
     }
     public void getOpenCVResult(View view){
@@ -150,14 +151,19 @@ public class RoogleTank extends Activity implements PictureCallback{
 		@Override
 		protected String doInBackground(String... urls) {
 			
+			
 			Log.d(TAG,"Pausing 1 sec before calling again.");
-			// Loop every 1 sec
+			
 			try {
 				new Thread().sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			getOpenCVResult(textView1);
+			if(!(stopUpdatingInBackground)){
+				// Loop every 1 sec
+				getOpenCVResult(textView1);
+			}
+			
 			
 			
 			String response = "hi in async";
@@ -260,6 +266,7 @@ public class RoogleTank extends Activity implements PictureCallback{
     @Override
     public synchronized void onPause() {
         super.onPause();
+        stopUpdatingInBackground = true;
         if(D) Log.e(TAG, "- ON PAUSE -");
     }
 
@@ -272,6 +279,7 @@ public class RoogleTank extends Activity implements PictureCallback{
     @Override
     public void onDestroy() {
         super.onDestroy();
+        stopUpdatingInBackground = true;
         // Stop the Bluetooth chat services
         if (mChatService != null) mChatService.stop();
         if(D) Log.e(TAG, "--- ON DESTROY ---");
