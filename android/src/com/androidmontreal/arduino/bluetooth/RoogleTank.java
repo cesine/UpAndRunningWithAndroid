@@ -139,8 +139,7 @@ public class RoogleTank extends Activity implements PictureCallback{
             return;
         }
         
-        stopUpdatingInBackground = false;
-        getOpenCVResult(textView1);
+        
     }
     public void getOpenCVResult(View view){
     	UpdateFromOpenCVTask getOpenCVResults = new UpdateFromOpenCVTask();
@@ -164,9 +163,7 @@ public class RoogleTank extends Activity implements PictureCallback{
 				getOpenCVResult(textView1);
 			}
 			
-			
-			
-			String response = "hi in async";
+			String response = "";
 			response = ((RoogleTankApp) getApplication()).getLastMessage(); 
 			return response;
 		}
@@ -197,13 +194,15 @@ public class RoogleTank extends Activity implements PictureCallback{
         super.onResume();
         if(D) Log.e(TAG, "+ ON RESUME +");
 
+        stopUpdatingInBackground = false;
+        getOpenCVResult(textView1);
         // Performing this check in onResume() covers the case in which BT was
         // not enabled during onStart(), so we were paused to enable it...
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
         if (mChatService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
             if (mChatService.getState() == BluetoothChatService.STATE_NONE) {
-              // Start the Bluetooth chat services
+              // Start the Blue tooth chat services
               mChatService.start();
             }
         }
