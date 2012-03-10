@@ -1,7 +1,7 @@
 ###############################################################
 #
-# Purpose: Makefile for "ball_following"
-# Author.: robotis
+# Purpose: Makefile for "standing in the center of 4 dots, based on ball_folowing"
+# Author.: robotis, modified by roogle team
 # Version: 0.1
 # License: GPL
 #

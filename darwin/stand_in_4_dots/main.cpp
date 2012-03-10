@@ -2,7 +2,7 @@
  * main.cpp
  *
  *  Created on: 2011. 1. 4.
- *      Author: robotis
+ *      Author: robotis, modified by roogle
  */
 
 #include <stdio.h>
