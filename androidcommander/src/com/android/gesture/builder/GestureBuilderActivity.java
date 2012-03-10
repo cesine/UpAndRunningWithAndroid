@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.Comparator;
 import java.util.Set;
 import java.io.File;
+import com.androidmontreal.arduino.commander.R;
 
 public class GestureBuilderActivity extends ListActivity {
     private static final int STATUS_SUCCESS = 0;

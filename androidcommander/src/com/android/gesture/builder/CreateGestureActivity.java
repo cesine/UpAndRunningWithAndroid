@@ -29,6 +29,8 @@ import android.widget.Toast;
 
 import java.io.File;
 
+import com.androidmontreal.arduino.commander.R;
+
 public class CreateGestureActivity extends Activity {
     private static final float LENGTH_THRESHOLD = 120.0f;
 
