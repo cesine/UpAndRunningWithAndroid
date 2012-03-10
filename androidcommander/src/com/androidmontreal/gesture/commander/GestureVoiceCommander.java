@@ -3,6 +3,7 @@ package com.androidmontreal.gesture.commander;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
@@ -13,6 +14,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import com.android.gesture.builder.GestureBuilderActivity;
 import com.androidmontreal.arduino.commander.R;
 
 public class GestureVoiceCommander extends Activity implements
@@ -48,5 +51,10 @@ public class GestureVoiceCommander extends Activity implements
 				Log.d(TAG, "Detected this gesture "+prediction.name+" with a score of "+prediction.score);
 			}
 		}
+	}
+	
+	public void onViewGesturesClick(View v){
+		Intent i = new Intent(this, GestureBuilderActivity.class);
+		startActivity(i);
 	}
 }

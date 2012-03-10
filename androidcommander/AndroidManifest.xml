@@ -30,7 +30,7 @@
         
 
         <activity
-            android:name="CreateGestureActivity"
+            android:name="com.android.gesture.builder.CreateGestureActivity"
             android:label="@string/label_create_gesture" >
         </activity>
 
