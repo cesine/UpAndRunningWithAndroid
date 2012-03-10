@@ -10,6 +10,7 @@ import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.gesture.Prediction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import com.androidmontreal.arduino.commander.R;
@@ -17,6 +18,9 @@ import com.androidmontreal.arduino.commander.R;
 public class GestureVoiceCommander extends Activity implements
 		OnGesturePerformedListener {
 	private GestureLibrary gestureLib;
+	 // Debugging
+    private static final String TAG = "RoogleCommander";
+    private static final boolean D = true;
 
 	/** Called when the activity is first created. */
 
@@ -38,9 +42,10 @@ public class GestureVoiceCommander extends Activity implements
 	public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
 		ArrayList<Prediction> predictions = gestureLib.recognize(gesture);
 		for (Prediction prediction : predictions) {
-			if (prediction.score > 1.0) {
+			if (prediction.score > 3.0) {
 				Toast.makeText(this, prediction.name, Toast.LENGTH_SHORT)
 						.show();
+				Log.d(TAG, "Detected this gesture "+prediction.name+" with a score of "+prediction.score);
 			}
 		}
 	}
