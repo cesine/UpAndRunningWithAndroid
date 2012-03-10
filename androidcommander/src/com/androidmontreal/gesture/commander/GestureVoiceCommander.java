@@ -19,10 +19,14 @@ import android.widget.Toast;
 
 import com.android.gesture.builder.GestureBuilderActivity;
 import com.androidmontreal.arduino.commander.R;
+import com.androidmontreal.gesture.commander.RoverLexicon;
 
 public class GestureVoiceCommander extends Activity implements
 		OnGesturePerformedListener , TextToSpeech.OnInitListener {
 	private GestureLibrary gestureLib;
+	private RoverLexicon lexicon;
+	
+	
 	// Debugging
 	private static final String TAG = "RoogleCommander";
 	private static final boolean D = true;
@@ -44,6 +48,7 @@ public class GestureVoiceCommander extends Activity implements
 		}
 		setContentView(gestureOverlayView);
 		mTts = new TextToSpeech(this, this);
+		lexicon = new RoverLexicon(RoverLexicon.EN);
         
 	}
 
@@ -64,8 +69,9 @@ public class GestureVoiceCommander extends Activity implements
 	}
 
 	public String sendCommand(String command){
-		mTts.speak("I will tell the robot to "+command,TextToSpeech.QUEUE_ADD, null);
-		return "Sent";
+		String guessedCommand = lexicon.guessWhatToDo(command);
+		mTts.speak(lexicon.EN_CARRIER_PHRASE+guessedCommand,TextToSpeech.QUEUE_ADD, null);
+		return lexicon.executeGuess();
 	}
 	public void onViewGesturesClick(View v) {
 		Intent i = new Intent(this, GestureBuilderActivity.class);

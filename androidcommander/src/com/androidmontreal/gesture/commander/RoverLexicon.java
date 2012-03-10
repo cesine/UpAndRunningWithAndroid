@@ -12,6 +12,9 @@ public class RoverLexicon {
 	 */
 	public static final int EN = 1000;
 	public static final int FR = 1001;
+	public static final String EN_CARRIER_PHRASE = "I will tell the robot:  ";
+	public static final String FR_CARRIER_PHRASE = "Je vais dire au robo: ";
+	
 
 	/*
 	 * Commands, use the order of these constants for
@@ -22,14 +25,16 @@ public class RoverLexicon {
 	public static final int EXPLORE = 1;
 	public static final int FORWARD = 2;
 	public static final int REVERSE = 3;
-	public static final int TURNRIGHT = 4;
-	public static final int TURNLEFT = 5;
-	public static final int ROTATERIGHT = 6;
-	public static final int ROTATELEFT = 7;
+	public static final int TURNRIGHT = 6;
+	public static final int TURNLEFT = 7;
+	public static final int ROTATERIGHT = 4;
+	public static final int ROTATELEFT = 5;
 
 	private ArrayList<String> en;
 	private ArrayList<String> fr;
 
+	private int mCommandToExecute;
+	
 	public String stop() {
 		return "S";
 	}
@@ -64,24 +69,27 @@ public class RoverLexicon {
 
 	public void defineLanguages() {
 		en = new ArrayList<String>();
-		en.add(STOP, "stop|don't|no|damn");
-		en.add(EXPLORE, "explore|try");
-		en.add(FORWARD, "forward|ahead");
-		en.add(REVERSE, "reverse|back");
+		en.add(STOP, "stop:wait:don't:no:damn");
+		en.add(EXPLORE, "explore:try");
+		en.add(FORWARD, "forward:ahead");
+		en.add(REVERSE, "reverse:back");
+		en.add(ROTATERIGHT, "rotate&right");
+		en.add(ROTATELEFT, "rotate&left");
 		en.add(TURNRIGHT, "right");
 		en.add(TURNLEFT, "left");
-		en.add(ROTATELEFT, "rotate&left");
-		en.add(ROTATERIGHT, "rotate&right");
-
+		
+		
 		fr = new ArrayList<String>();
-		fr.add(STOP, "arret|pas|voyons|merde");
+		fr.add(STOP, "arrete:pas:voyons:merde");
 		fr.add(EXPLORE, "explore");
-		fr.add(FORWARD, "avanc");
-		fr.add(REVERSE, "recul");
+		fr.add(FORWARD, "avance");
+		fr.add(REVERSE, "recule");
+		fr.add(ROTATERIGHT, "rotate&droit");
+		fr.add(ROTATELEFT, "rotate&gauche");
 		fr.add(TURNRIGHT, "droit");
 		fr.add(TURNLEFT, "gauche");
-		fr.add(ROTATELEFT, "rotat&gauche");
-		fr.add(ROTATERIGHT, "rotat&droit");
+		
+		
 	}
 
 	public String execute(int commandInteger) {
@@ -108,7 +116,9 @@ public class RoverLexicon {
 	}
 
 	public String guessWhatToDo(String command) {
+		command = command.toLowerCase();
 		int commandToExecute = STOP;
+		String commandForHumans = command;
 
 		ArrayList<String> humancommands = en;
 		if (language == FR) {
@@ -116,13 +126,14 @@ public class RoverLexicon {
 		}
 		for (int i = 0; i < humancommands.size(); i++) {
 			String[] andwords = humancommands.get(i).split("&");
-			String[] orwords = humancommands.get(i).split("|");
+			String[] orwords = humancommands.get(i).split(":");
 			/*
 			 * If there are AND words, then check first to see if it matches all
 			 * words
 			 */
-			if (andwords.length > 0) {
+			if (andwords.length > 1) {
 				int wordsfound = 0;
+				commandForHumans = andwords[0];
 				for (int k = 0; k < andwords.length; k++) {
 					if (command.contains(andwords[k])) {
 						wordsfound++;
@@ -130,31 +141,49 @@ public class RoverLexicon {
 				}
 				if (wordsfound >= andwords.length) {
 					commandToExecute = i;
-					break;
+					return commandForHumans;
 				}
 			}
 			/*
-			 * Then if a command hasn't been issued, check for the or words.
+			 * Then if a command hasn't been issued, check for the OR words.
 			 */
-			for (int k = 0; k < orwords.length; k++) {
-				if (command.contains(orwords[k])) {
-					commandToExecute = i;
-					break;
+			if(orwords.length > 0){
+				commandForHumans = orwords[0];
+				for (int k = 0; k < orwords.length; k++) {
+					if (command.contains(orwords[k])) {
+						commandToExecute = i;
+						return commandForHumans;
+					}
 				}
 			}
+			
 
 		}
-		return execute(commandToExecute);
+		mCommandToExecute = commandToExecute;
+		return commandForHumans;
+	}
+	public String executeGuess(){
+		if(mCommandToExecute >= 0){
+			return execute(mCommandToExecute);
+		}
+		return "";
 	}
 
 	public RoverLexicon(int language, int timer) {
 		super();
+		defineLanguages();
 		this.language = language;
 		this.timer = timer;
 	}
-
+	public RoverLexicon(int language) {
+		super();
+		defineLanguages();
+		this.language = language;
+		this.timer = 5;
+	}
 	public RoverLexicon() {
 		super();
+		defineLanguages();
 		this.language = EN;
 		this.timer = 5;
 	}
