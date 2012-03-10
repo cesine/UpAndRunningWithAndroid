@@ -28,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-
 import com.androidmontreal.arduino.commander.R;
 
 public class CreateGestureActivity extends Activity {
