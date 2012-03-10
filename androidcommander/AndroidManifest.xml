@@ -20,15 +20,15 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <application>
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/application_name" >
 
         <activity
             android:name="com.android.gesture.builder.GestureBuilderActivity"
-            android:label="@string/application_name"
-            android:icon="@drawable/ic_gesturebuilder">
+            android:label="@string/application_name">
         </activity>
         
-
         <activity
             android:name="com.android.gesture.builder.CreateGestureActivity"
             android:label="@string/label_create_gesture" >
@@ -36,8 +36,7 @@
 
         <activity
             android:name="com.androidmontreal.gesture.commander.GestureVoiceCommander"
-            android:label="@string/application_name"
-            android:icon="@drawable/ic_gesturebuilder">
+            android:label="@string/application_name">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
