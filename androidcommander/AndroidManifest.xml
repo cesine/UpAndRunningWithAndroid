@@ -26,6 +26,18 @@
             android:name="com.android.gesture.builder.GestureBuilderActivity"
             android:label="@string/application_name"
             android:icon="@drawable/ic_gesturebuilder">
+        </activity>
+        
+
+        <activity
+            android:name="CreateGestureActivity"
+            android:label="@string/label_create_gesture" >
+        </activity>
+
+        <activity
+            android:name="com.androidmontreal.gesture.commander.GestureVoiceCommander"
+            android:label="@string/application_name"
+            android:icon="@drawable/ic_gesturebuilder">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,10 +46,5 @@
             </intent-filter>
 
         </activity>
-
-        <activity
-            android:name="CreateGestureActivity"
-            android:label="@string/label_create_gesture" />
-
     </application>
 </manifest>
