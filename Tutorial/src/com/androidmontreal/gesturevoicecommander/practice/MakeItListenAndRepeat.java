@@ -24,7 +24,7 @@ import com.androidmontreal.gesturevoicecommander.R;
  * @author cesine
  * 
  */
-public class MakeItTalk extends Activity implements OnInitListener {
+public class MakeItListenAndRepeat extends Activity implements OnInitListener {
   private static final String TAG = "MakeItListen";
   private static final int RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE = 341;
   /** Talk to the user */
