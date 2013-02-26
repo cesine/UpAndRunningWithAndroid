@@ -5,71 +5,36 @@ import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.gesture.Gesture;
-import android.gesture.GestureLibraries;
-import android.gesture.GestureLibrary;
-import android.gesture.GestureOverlayView;
-import android.gesture.Prediction;
-import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import com.androidmontreal.gesturevoicecommander.GestureBuilderActivity;
 import com.androidmontreal.gesturevoicecommander.R;
-import com.androidmontreal.gesturevoicecommander.robots.RoverLexicon;
 
 /**
  * 
- * Building on what we saw in MakeItListenAndRepeat, now lets make it understand
- * gestures, or speech (sometimes its too noisy or too public to speak to your
- * Android). Here is some super simple code that builds on the GestureBuilder
- * sample code to recognize what the user wants the Android to do, and then use
- * Text To Speech to tell the user what it might have understood.
+ * Building on what we saw in MakeItTalk, now lets make it Listen. Here is some
+ * super simple code that uses the VoiceRecognition Intent to recognize what the
+ * user says, and then uses Text To Speech to tell the user what it might have
+ * heard.
  * 
  * @author cesine
  * 
  */
-public class MakeItUnderstandGestures extends Activity implements
-    OnInitListener, OnGesturePerformedListener {
-  private static final String TAG = "MakeItUnderstandGestures";
+public class MakeItListenAndRepeat extends Activity implements OnInitListener {
+  private static final String TAG = "MakeItListen";
   private static final int RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE = 341;
-  private static final boolean D = true;
-
   /** Talk to the user */
   private TextToSpeech mTts;
-
-  /*
-   * A gesture library we created with the GestureBuilder, saved on the SDCard
-   * and then imported into the res/raw folder of this project
-   */
-  private GestureLibrary gestureLib;
-
-  /* A little lexicon we made for the DFR Rover at Cloud Robotics Hackathon */
-  private RoverLexicon lexicon;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     mTts = new TextToSpeech(this, this);
-
-    GestureOverlayView gestureOverlayView = new GestureOverlayView(this);
-    View inflate = getLayoutInflater().inflate(R.layout.commander, null);
-    gestureOverlayView.addView(inflate);
-    gestureOverlayView.addOnGesturePerformedListener(this);
-    // gestureLib = GestureLibraries.fromFile(fileOnYourSDCard);
-    gestureLib = GestureLibraries.fromRawResource(this, R.raw.gestures);
-    if (!gestureLib.load()) {
-      finish();
-    }
-    setContentView(gestureOverlayView);
-
-    lexicon = new RoverLexicon();
 
   }
 
@@ -96,10 +61,35 @@ public class MakeItUnderstandGestures extends Activity implements
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE
         && resultCode == RESULT_OK) {
+      /*
+       * Populate the wordsList with the String values the recognition engine
+       * thought it heard, and then Toast them to the user and say them out
+       * loud.
+       */
       ArrayList<String> matches = data
           .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-      /* try to find a robot command in the first match */
-      sendRobotThisCommand(matches.get(0));
+      for (int iMightHaveHeardThis = 0; iMightHaveHeardThis < matches.size(); iMightHaveHeardThis++) {
+
+        /* Build a carrierPhrase if you want it to make some sense */
+        String carrierPhrase = getString(R.string.i_might_have_heard);
+        if (iMightHaveHeardThis > 0) {
+          carrierPhrase = getString(R.string.or_maybe);
+        }
+        carrierPhrase += " " + matches.get(iMightHaveHeardThis) + ".";
+
+        Toast.makeText(this, carrierPhrase, Toast.LENGTH_LONG).show();
+        mTts.speak(carrierPhrase, TextToSpeech.QUEUE_ADD, null);
+
+        /*
+         * Don't go on forever, it there are too many potential matches don't
+         * say them all
+         */
+        if (iMightHaveHeardThis == 2 && matches.size() > 2) {
+          mTts.speak(getString(R.string.there_were_others),
+              TextToSpeech.QUEUE_ADD, null);
+          break;
+        }
+      }
     }
     super.onActivityResult(requestCode, resultCode, data);
   }
@@ -129,6 +119,8 @@ public class MakeItUnderstandGestures extends Activity implements
             Toast.LENGTH_LONG).show();
       } else {
         // everything is working.
+        promptTheUserToTalk();
+        startVoiceRecognitionActivity();
       }
     } else {
       Toast.makeText(
@@ -137,43 +129,5 @@ public class MakeItUnderstandGestures extends Activity implements
               + "I could not initialize TextToSpeech.", Toast.LENGTH_LONG)
           .show();
     }
-  }
-
-  @Override
-  public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
-    ArrayList<Prediction> predictions = gestureLib.recognize(gesture);
-    for (Prediction prediction : predictions) {
-      if (prediction.score > 3.0) {
-        Log.d(TAG, "Detected this gesture " + prediction.name
-            + " with a score of " + prediction.score);
-      }
-    }
-    if (predictions.size() > 0) {
-      sendRobotThisCommand(predictions.get(0).name);
-    }
-  }
-
-  public String sendRobotThisCommand(String command) {
-    String guessedCommand = lexicon.guessWhatToDo(command);
-    Toast.makeText(this, guessedCommand, Toast.LENGTH_SHORT).show();
-
-    if (Locale.getDefault().getLanguage().contains("fr")) {
-      mTts.speak(lexicon.FR_CARRIER_PHRASE + guessedCommand,
-          TextToSpeech.QUEUE_ADD, null);
-    } else {
-      mTts.speak(lexicon.EN_CARRIER_PHRASE + guessedCommand,
-          TextToSpeech.QUEUE_ADD, null);
-    }
-    return lexicon.executeGuess();
-  }
-
-  public void onCommandByVoiceClick(View v) {
-    promptTheUserToTalk();
-    startVoiceRecognitionActivity();
-  }
-
-  public void onViewGesturesClick(View v) {
-    Intent i = new Intent(this, GestureBuilderActivity.class);
-    startActivity(i);
   }
 }
