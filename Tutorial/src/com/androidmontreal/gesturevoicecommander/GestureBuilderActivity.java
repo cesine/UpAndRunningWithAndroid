@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.gesture.builder;
+package com.androidmontreal.gesturevoicecommander;
 
 import android.app.Dialog;
 import android.app.AlertDialog;
@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.Comparator;
 import java.util.Set;
 import java.io.File;
+
 
 public class GestureBuilderActivity extends ListActivity {
     private static final int STATUS_SUCCESS = 0;

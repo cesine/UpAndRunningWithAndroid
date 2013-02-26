@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.gesture.builder;
+package com.androidmontreal.gesturevoicecommander;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+
 
 public class CreateGestureActivity extends Activity {
     private static final float LENGTH_THRESHOLD = 120.0f;
