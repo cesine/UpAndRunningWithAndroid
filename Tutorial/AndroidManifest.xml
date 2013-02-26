@@ -13,32 +13,36 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- -->
+-->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.androidmontreal.gesturevoicecommander">
+    package="com.androidmontreal.gesturevoicecommander" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    
-    <uses-sdk android:targetSdkVersion="17" android:minSdkVersion="7"/>
-    <application>
 
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="17" />
+
+    <application>
         <activity
             android:name="GestureBuilderActivity"
-            android:label="@string/application_name"
-            android:icon="@drawable/ic_gesturebuilder">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
+            android:icon="@drawable/ic_gesturebuilder"
+            android:label="@string/application_name" >
         </activity>
-
         <activity
             android:name="CreateGestureActivity"
             android:label="@string/label_create_gesture" />
+        <activity
+            android:name=".practice.MakeItTalk"
+            android:label="Text To Speech" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
+
 </manifest>
