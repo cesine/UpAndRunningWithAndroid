@@ -9,11 +9,12 @@ import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.androidmontreal.gesturevoicecommander.R;
+
 public class MakeItTalk extends Activity implements OnInitListener {
   private static final String TAG = "MakeItTalk";
   /** Talk to the user */
   private TextToSpeech mTts;
-  private String mMyFirstWords;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +25,7 @@ public class MakeItTalk extends Activity implements OnInitListener {
   }
 
   protected void sayFirstWords() {
-    if ((Locale.getDefault().getLanguage().contains("fr"))) {
-      mMyFirstWords = "Bonsoir! Moi, je peux parler aussi!";
-    } else {
-      mMyFirstWords = "I can talk!";
-    }
-    mTts.speak(mMyFirstWords, TextToSpeech.QUEUE_ADD, null);
+    mTts.speak(getString(R.string.my_first_words), TextToSpeech.QUEUE_ADD, null);
   }
 
   @Override
