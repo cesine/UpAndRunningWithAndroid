@@ -6,5 +6,7 @@
     <string name="i_might_have_heard">Je crois que j\'ai entendu: </string>
     <string name="or_maybe">Ou bien: </string>
     <string name="there_were_others"> J\'ai un sens de l\'humour, non?  Il y avait d\'autres options, mais je crois que la, c\'est assez.</string>
+    <string name="button_command_by_voice">Voix</string>
+    <string name="button_view_edit_gestures">Menu d\'instructions pour des robots</string>
 
 </resources>

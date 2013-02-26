@@ -96,7 +96,8 @@ public class GestureBuilderActivity extends ListActivity {
         setListAdapter(mAdapter);
 
         if (sStore == null) {
-            sStore = GestureLibraries.fromFile(mStoreFile);
+//            sStore = GestureLibraries.fromFile(mStoreFile);
+          sStore = GestureLibraries.fromRawResource(this, R.raw.gestures);
         }
         mEmpty = (TextView) findViewById(android.R.id.empty);
         loadGestures();

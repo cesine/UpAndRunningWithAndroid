@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/commandByVoice"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onCommandByVoiceClick"
+        android:text="@string/button_command_by_voice" />
+
+    <Button
+        android:id="@+id/editGestures"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onViewGesturesClick"
+        android:text="@string/button_view_edit_gestures" />
+
+</LinearLayout>

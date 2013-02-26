@@ -30,7 +30,7 @@
     <string name="i_might_have_heard">I might have heard: </string>
     <string name="or_maybe">Or maybe this: </string>
     <string name="there_were_others">. I\'m pretty funny, ey? There were some other options, but I think I\'ll stop there. </string>
-    
+
     <!-- Buttons -->
     <skip />
     <!-- Label, button used to add a gesture -->
@@ -41,6 +41,8 @@
     <string name="button_discard">Discard</string>
     <!-- Label, button used to save a gesture newly created -->
     <string name="button_done">Done</string>
+    <string name="button_command_by_voice">Voice</string>
+    <string name="button_view_edit_gestures">Robot Command Menu</string>
 
     <!-- Gestures -->
     <skip />
