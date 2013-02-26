@@ -36,6 +36,10 @@
         <activity
             android:name=".practice.MakeItTalk"
             android:label="Text To Speech" >
+        </activity>
+         <activity
+            android:name=".practice.MakeItListenAndRepeat"
+            android:label="Speech Recognition" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
