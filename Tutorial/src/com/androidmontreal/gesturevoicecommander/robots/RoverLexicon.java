@@ -67,6 +67,7 @@ public class RoverLexicon {
 
   public void defineLanguages() {
     en = new ArrayList<String>();
+    en.add(STOP, "stop:wait:don't:no:damn");
     en.add(EXPLORE, "explore:try");
     en.add(FORWARD, "forward:ahead");
     en.add(REVERSE, "reverse:back");
@@ -74,7 +75,6 @@ public class RoverLexicon {
     en.add(ROTATELEFT, "rotate&left");
     en.add(TURNRIGHT, "right");
     en.add(TURNLEFT, "left");
-    en.add(STOP, "stop:wait:don't:no:damn");
 
     fr = new ArrayList<String>();
     fr.add(EXPLORE, "explore");
