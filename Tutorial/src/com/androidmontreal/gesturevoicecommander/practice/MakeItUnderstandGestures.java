@@ -99,7 +99,9 @@ public class MakeItUnderstandGestures extends Activity implements
       ArrayList<String> matches = data
           .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
       /* try to find a robot command in the first match */
-      sendRobotThisCommand(matches.get(0));
+      if (matches.size() > 0) {
+        sendRobotThisCommand(matches.get(0));
+      }
     }
     super.onActivityResult(requestCode, resultCode, data);
   }
