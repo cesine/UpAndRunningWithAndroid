@@ -1,5 +1,10 @@
 package com.androidmontreal.gesturevoicecommander.practice;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -9,9 +14,10 @@ import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
-import android.gesture.Prediction;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
+import android.gesture.Prediction;
 import android.os.Bundle;
+import android.os.Environment;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
@@ -35,147 +41,203 @@ import com.androidmontreal.gesturevoicecommander.robots.RoverLexicon;
  * 
  */
 public class MakeItUnderstandGestures extends Activity implements
-    OnInitListener, OnGesturePerformedListener {
-  private static final String TAG = "MakeItUnderstandGestures";
-  private static final int RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE = 341;
-  private static final boolean D = true;
+OnInitListener, OnGesturePerformedListener {
 
-  /** Talk to the user */
-  private TextToSpeech mTts;
+	//Constants used in mTestPath.
+	public static final String CONFIGURATION_FILENAME = "my.config"; 
+	public static final String LOG_TAG = "MyApplication-";
 
-  /*
-   * A gesture library we created with the GestureBuilder, saved on the SDCard
-   * and then imported into the res/raw folder of this project
-   */
-  private GestureLibrary gestureLib;
 
-  /* A little lexicon we made for the DFR Rover at Cloud Robotics Hackathon */
-  private RoverLexicon lexicon;
+	private static final String TAG = "MakeItUnderstandGestures";
+	private static final int RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE = 341;
+	private static final boolean D = true;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+	/** Talk to the user */
+	private TextToSpeech mTts;
 
-    mTts = new TextToSpeech(this, this);
+	/*
+	 * A gesture library we created with the GestureBuilder, saved on the SDCard
+	 * and then imported into the res/raw folder of this project
+	 */
+	private GestureLibrary gestureLib;
 
-    GestureOverlayView gestureOverlayView = new GestureOverlayView(this);
-    View inflate = getLayoutInflater().inflate(R.layout.commander, null);
-    gestureOverlayView.addView(inflate);
-    gestureOverlayView.addOnGesturePerformedListener(this);
-    // gestureLib = GestureLibraries.fromFile(fileOnYourSDCard);
-    gestureLib = GestureLibraries.fromRawResource(this, R.raw.gestures);
-    if (!gestureLib.load()) {
-      finish();
-    }
-    setContentView(gestureOverlayView);
+	/* A little lexicon we made for the DFR Rover at Cloud Robotics Hackathon */
+	private RoverLexicon lexicon;
 
-    lexicon = new RoverLexicon();
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-  }
+		mTts = new TextToSpeech(this, this);
 
-  protected void promptTheUserToTalk() {
-    mTts.speak(getString(R.string.im_listening), TextToSpeech.QUEUE_ADD, null);
-  }
+		GestureOverlayView gestureOverlayView = new GestureOverlayView(this);
+		View inflate = getLayoutInflater().inflate(R.layout.commander, null);
+		gestureOverlayView.addView(inflate);
+		gestureOverlayView.addOnGesturePerformedListener(this);
 
-  /**
-   * Fire an intent to start the voice recognition activity.
-   */
-  private void startVoiceRecognitionActivity() {
-    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-    intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-        getString(R.string.im_listening));
-    startActivityForResult(intent, RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE);
-  }
+		// Raw file in the app, text file in the SD card folder		
+		String rawGestureFilePath = Environment.getExternalStorageDirectory().getAbsoluteFile().getAbsolutePath(); 
 
-  /**
-   * Handle the results from the voice recognition activity.
-   */
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode == RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE
-        && resultCode == RESULT_OK) {
-      ArrayList<String> matches = data
-          .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-      /* try to find a robot command in the first match */
-      if (matches.size() > 0) {
-        sendRobotThisCommand(matches.get(0));
-      }
-    }
-    super.onActivityResult(requestCode, resultCode, data);
-  }
+		String txtFileName = "gestures.txt";
+		String fileOnYourSDCard = rawGestureFilePath.concat("/").concat(txtFileName); //"/storage/sdcard0/gestures.txt";
 
-  @Override
-  protected void onDestroy() {
-    if (mTts != null) {
-      mTts.stop();
-      mTts.shutdown();
-    }
-    super.onDestroy();
-  }
+		// Copy the raw file to the phone
+		copyRawGesturesToSDCard(fileOnYourSDCard);
 
-  @Override
-  public void onInit(int status) {
-    if (status == TextToSpeech.SUCCESS) {
-      int result = mTts.setLanguage(Locale.getDefault());
-      if (result == TextToSpeech.LANG_MISSING_DATA
-          || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-        Log.e(TAG, "Language is not available.");
-        Toast.makeText(
-            this,
-            "The " + Locale.getDefault().getDisplayLanguage()
-                + " TextToSpeech isn't installed, you can go into the "
-                + "\nAndroid's settings in the "
-                + "\nVoice Input and Output menu to turn it on. ",
-            Toast.LENGTH_LONG).show();
-      } else {
-        // everything is working.
-      }
-    } else {
-      Toast.makeText(
-          this,
-          "Sorry, I can't talk to you because "
-              + "I could not initialize TextToSpeech.", Toast.LENGTH_LONG)
-          .show();
-    }
-  }
+		// Now from the destination file
+		gestureLib = GestureLibraries.fromFile(fileOnYourSDCard);
+		// gestureLib = GestureLibraries.fromRawResource(this, R.raw.gestures);
+		if (!gestureLib.load()) {
+			finish();
+		}
+		setContentView(gestureOverlayView);
 
-  @Override
-  public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
-    ArrayList<Prediction> predictions = gestureLib.recognize(gesture);
-    for (Prediction prediction : predictions) {
-      if (prediction.score > 3.0) {
-        Log.d(TAG, "Detected this gesture " + prediction.name
-            + " with a score of " + prediction.score);
-      }
-    }
-    if (predictions.size() > 0) {
-      sendRobotThisCommand(predictions.get(0).name);
-    }
-  }
+		lexicon = new RoverLexicon();
 
-  public String sendRobotThisCommand(String command) {
-    String guessedCommand = lexicon.guessWhatToDo(command);
-    Toast.makeText(this, guessedCommand, Toast.LENGTH_SHORT).show();
+	}
 
-    if (Locale.getDefault().getLanguage().contains("fr")) {
-      mTts.speak(lexicon.FR_CARRIER_PHRASE + guessedCommand,
-          TextToSpeech.QUEUE_ADD, null);
-    } else {
-      mTts.speak(lexicon.EN_CARRIER_PHRASE + guessedCommand,
-          TextToSpeech.QUEUE_ADD, null);
-    }
-    return lexicon.executeGuess();
-  }
+	protected void promptTheUserToTalk() {
+		mTts.speak(getString(R.string.im_listening), TextToSpeech.QUEUE_ADD, null);
+	}
 
-  public void onCommandByVoiceClick(View v) {
-    promptTheUserToTalk();
-    startVoiceRecognitionActivity();
-  }
+	/**
+	 * Fire an intent to start the voice recognition activity.
+	 */
+	private void startVoiceRecognitionActivity() {
+		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+		intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+				getString(R.string.im_listening));
+		startActivityForResult(intent, RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE);
+	}
 
-  public void onViewGesturesClick(View v) {
-    Intent i = new Intent(this, GestureBuilderActivity.class);
-    startActivity(i);
-  }
+	/**
+	 * Handle the results from the voice recognition activity.
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE
+				&& resultCode == RESULT_OK) {
+			ArrayList<String> matches = data
+					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+			/* try to find a robot command in the first match */
+			if (matches.size() > 0) {
+				sendRobotThisCommand(matches.get(0));
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	protected void onDestroy() {
+		if (mTts != null) {
+			mTts.stop();
+			mTts.shutdown();
+		}
+		super.onDestroy();
+	}
+
+	@Override
+	public void onInit(int status) {
+		if (status == TextToSpeech.SUCCESS) {
+			int result = mTts.setLanguage(Locale.getDefault());
+			if (result == TextToSpeech.LANG_MISSING_DATA
+					|| result == TextToSpeech.LANG_NOT_SUPPORTED) {
+				Log.e(TAG, "Language is not available.");
+				Toast.makeText(
+						this,
+						"The " + Locale.getDefault().getDisplayLanguage()
+						+ " TextToSpeech isn't installed, you can go into the "
+						+ "\nAndroid's settings in the "
+						+ "\nVoice Input and Output menu to turn it on. ",
+						Toast.LENGTH_LONG).show();
+			} else {
+				// everything is working.
+			}
+		} else {
+			Toast.makeText(
+					this,
+					"Sorry, I can't talk to you because "
+							+ "I could not initialize TextToSpeech.", Toast.LENGTH_LONG)
+							.show();
+		}
+	}
+
+	@Override
+	public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
+		ArrayList<Prediction> predictions = gestureLib.recognize(gesture);
+		for (Prediction prediction : predictions) {
+			if (prediction.score > 3.0) {
+				Log.d(TAG, "Detected this gesture " + prediction.name
+						+ " with a score of " + prediction.score);
+			}
+		}
+		if (predictions.size() > 0) {
+			sendRobotThisCommand(predictions.get(0).name);
+		}
+	}
+
+	public String sendRobotThisCommand(String command) {
+		String guessedCommand = lexicon.guessWhatToDo(command);
+		Toast.makeText(this, guessedCommand, Toast.LENGTH_SHORT).show();
+
+		if (Locale.getDefault().getLanguage().contains("fr")) {
+			mTts.speak(lexicon.FR_CARRIER_PHRASE + guessedCommand,
+					TextToSpeech.QUEUE_ADD, null);
+		} else {
+			mTts.speak(lexicon.EN_CARRIER_PHRASE + guessedCommand,
+					TextToSpeech.QUEUE_ADD, null);
+		}
+		return lexicon.executeGuess();
+	}
+
+	public void onCommandByVoiceClick(View v) {
+		promptTheUserToTalk();
+		startVoiceRecognitionActivity();
+	}
+
+	public void onViewGesturesClick(View v) {
+		Intent i = new Intent(this, GestureBuilderActivity.class);
+		startActivity(i);
+	}
+
+	/**
+	 * Copy the raw gestures file of the app to the SD card.
+	 * @param fileOnYourSDCard a String containing the path to the destination file.
+	 */
+	public void copyRawGesturesToSDCard(String fileOnYourSDCard){
+
+		InputStream inStream = null;
+
+		File sdCardFile = null;
+		OutputStream outStream = null;
+
+		try{
+
+			inStream = getApplicationContext().getResources().openRawResource(R.raw.gestures);
+
+			sdCardFile = new File(fileOnYourSDCard);
+			outStream = new FileOutputStream(sdCardFile);
+
+			byte[] buffer = new byte[1024];
+			int length;
+			//copy the file content in bytes 
+			while ((length = inStream.read(buffer)) > 0){
+				outStream.write(buffer, 0, length);
+			}
+
+			inStream.close();
+			outStream.close();
+
+			System.out.println("The file was successfully copied!");
+
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+
+	}
+
+
+
 }
