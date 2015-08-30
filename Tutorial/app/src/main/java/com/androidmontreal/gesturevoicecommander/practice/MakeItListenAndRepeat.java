@@ -39,7 +39,7 @@ public class MakeItListenAndRepeat extends Activity implements OnInitListener {
   }
 
   protected void promptTheUserToTalk() {
-    mTts.speak(getString(R.string.im_listening), TextToSpeech.QUEUE_ADD, null);
+    this.speak(getString(R.string.im_listening));
   }
 
   /**
@@ -78,15 +78,14 @@ public class MakeItListenAndRepeat extends Activity implements OnInitListener {
         carrierPhrase += " " + matches.get(iMightHaveHeardThis) + ".";
 
         Toast.makeText(this, carrierPhrase, Toast.LENGTH_LONG).show();
-        mTts.speak(carrierPhrase, TextToSpeech.QUEUE_ADD, null);
+        this.speak(carrierPhrase);
 
         /*
          * Don't go on forever, it there are too many potential matches don't
          * say them all
          */
         if (iMightHaveHeardThis == 2 && matches.size() > 2) {
-          mTts.speak(getString(R.string.there_were_others),
-              TextToSpeech.QUEUE_ADD, null);
+          this.speak(getString(R.string.there_were_others));
           break;
         }
       }
@@ -130,4 +129,14 @@ public class MakeItListenAndRepeat extends Activity implements OnInitListener {
           .show();
     }
   }
+
+  public boolean speak(String message){
+    if (mTts != null) {
+      mTts.speak(message, TextToSpeech.QUEUE_ADD, null);
+    } else {
+      Toast.makeText(this, "Sorry, I can't speak to you: " + message, Toast.LENGTH_LONG) .show();
+    }
+    return true;
+  }
+
 }

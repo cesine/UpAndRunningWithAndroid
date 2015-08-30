@@ -74,7 +74,7 @@ public class MakeItUnderstandGestures extends Activity implements
   }
 
   protected void promptTheUserToTalk() {
-    mTts.speak(getString(R.string.im_listening), TextToSpeech.QUEUE_ADD, null);
+    this.speak(getString(R.string.im_listening));
   }
 
   /**
@@ -139,6 +139,15 @@ public class MakeItUnderstandGestures extends Activity implements
               + "I could not initialize TextToSpeech.", Toast.LENGTH_LONG)
           .show();
     }
+  }
+  
+  public boolean speak(String message){
+    if (mTts != null) {
+      mTts.speak(message, TextToSpeech.QUEUE_ADD, null);
+    } else {
+      Toast.makeText(this, "Sorry, I can't speak to you: " + message, Toast.LENGTH_LONG) .show();
+    }
+    return true;
   }
 
   @Override
