@@ -77,14 +77,14 @@ public class RoverLexicon {
         en.add(TURNLEFT, "left");
 
         fr = new ArrayList<String>();
-        fr.add(STOP, "arréter:pas:voyons:merde:zut:non:stop");
-        fr.add(EXPLORE, "explore");
-        fr.add(FORWARD, "avance:forward");
-        fr.add(REVERSE, "recule:reverse");
-        fr.add(ROTATERIGHT, "rotate&droit");
-        fr.add(ROTATELEFT, "rotate&gauche");
-        fr.add(TURNRIGHT, "droit:right");
-        fr.add(TURNLEFT, "gauche:left");
+        fr.add(STOP, "arrête:arrêter:arrêté:arrêter:arrêtez:pas:voyons:voyant:m****:merde:zut:non:stop");
+        fr.add(EXPLORE, "explore:explorer");
+        fr.add(FORWARD, "avance:tu dois:tu dois:te doi:tournoi:tout droit:avanc:forward");
+        fr.add(REVERSE, "recule:recul:reverse:arrière");
+        fr.add(ROTATERIGHT, "pivoter vers la droite:vers la droite:pilot:pivot:rotate&droit");
+        fr.add(ROTATELEFT, "pivoter vers la gauche:vers la gauche:rotate&gauche");
+        fr.add(TURNRIGHT, "à la droite:droite:droit:right");
+        fr.add(TURNLEFT, "à la gauche:gauche:left");
 
     }
 

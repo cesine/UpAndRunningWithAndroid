@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="my_first_words">Bonsoir! Moi, je peux parler aussi! M\'entendez vous?</string>
-    <string name="im_listening">Allez-y, Je vous écoute!</string>
+    <string name="im_listening">Je t\'écoute!</string>
     <string name="i_cant_listen">Je suis super désolée. Ton appareil est bizarre, il manque la reconnaissance vocale. Il faudrait que t\'utilises les commandes gestuelles (au lieu de parler)...</string>
     <string name="i_might_have_heard">Je crois que j\'ai entendu: </string>
     <string name="or_maybe">Ou bien: </string>
