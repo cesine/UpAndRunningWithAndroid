@@ -64,7 +64,7 @@ public class GestureBuilderActivity extends ListActivity {
     private static final int DIALOG_RENAME_GESTURE = 1;
 
     private static final int REQUEST_NEW_GESTURE = 1;
-    
+
     // Type: long (id)
     private static final String GESTURES_INFO_ID = "gestures.info_id";
 
@@ -97,7 +97,7 @@ public class GestureBuilderActivity extends ListActivity {
 
         if (sStore == null) {
 //            sStore = GestureLibraries.fromFile(mStoreFile);
-          sStore = GestureLibraries.fromRawResource(this, R.raw.gestures);
+            sStore = GestureLibraries.fromRawResource(this, R.raw.gestures);
         }
         mEmpty = (TextView) findViewById(android.R.id.empty);
         loadGestures();
@@ -113,7 +113,7 @@ public class GestureBuilderActivity extends ListActivity {
     public void reloadGestures(View v) {
         loadGestures();
     }
-    
+
     @SuppressWarnings({"UnusedDeclaration"})
     public void addGesture(View v) {
         Intent intent = new Intent(this, CreateGestureActivity.class);
@@ -123,7 +123,7 @@ public class GestureBuilderActivity extends ListActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        
+
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_NEW_GESTURE:
@@ -136,7 +136,7 @@ public class GestureBuilderActivity extends ListActivity {
     private void loadGestures() {
         if (mTask != null && mTask.getStatus() != GesturesLoadTask.Status.FINISHED) {
             mTask.cancel(true);
-        }        
+        }
         mTask = (GesturesLoadTask) new GesturesLoadTask().execute();
     }
 
@@ -174,7 +174,8 @@ public class GestureBuilderActivity extends ListActivity {
         long id = state.getLong(GESTURES_INFO_ID, -1);
         if (id != -1) {
             final Set<String> entries = sStore.getGestureEntries();
-out:        for (String name : entries) {
+            out:
+            for (String name : entries) {
                 for (Gesture gesture : sStore.getGestures(name)) {
                     if (gesture.getID() == id) {
                         mCurrentRenameGesture = new NamedGesture();
@@ -188,9 +189,7 @@ out:        for (String name : entries) {
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-            ContextMenu.ContextMenuInfo menuInfo) {
-
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
@@ -202,8 +201,7 @@ out:        for (String name : entries) {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        final AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo)
-                item.getMenuInfo();
+        final AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         final NamedGesture gesture = (NamedGesture) menuInfo.targetView.getTag();
 
         switch (item.getItemId()) {
@@ -254,18 +252,18 @@ out:        for (String name : entries) {
             }
         });
         builder.setNegativeButton(getString(R.string.cancel_action),
-            new Dialog.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    cleanupRenameDialog();
+                new Dialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        cleanupRenameDialog();
+                    }
                 }
-            }
         );
         builder.setPositiveButton(getString(R.string.rename_action),
-            new Dialog.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    changeGestureName();
+                new Dialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        changeGestureName();
+                    }
                 }
-            }
         );
         builder.setView(layout);
         return builder.create();
@@ -333,8 +331,8 @@ out:        for (String name : entries) {
 
             findViewById(R.id.addButton).setEnabled(false);
             findViewById(R.id.reloadButton).setEnabled(false);
-            
-            mAdapter.setNotifyOnChange(false);            
+
+            mAdapter.setNotifyOnChange(false);
             mAdapter.clear();
         }
 
@@ -352,8 +350,7 @@ out:        for (String name : entries) {
                     if (isCancelled()) break;
 
                     for (Gesture gesture : store.getGestures(name)) {
-                        final Bitmap bitmap = gesture.toBitmap(mThumbnailSize, mThumbnailSize,
-                                mThumbnailInset, mPathColor);
+                        final Bitmap bitmap = gesture.toBitmap(mThumbnailSize, mThumbnailSize, mThumbnailInset, mPathColor);
                         final NamedGesture namedGesture = new NamedGesture();
                         namedGesture.gesture = gesture;
                         namedGesture.name = name;
@@ -391,8 +388,7 @@ out:        for (String name : entries) {
             if (result == STATUS_NO_STORAGE) {
                 getListView().setVisibility(View.GONE);
                 mEmpty.setVisibility(View.VISIBLE);
-                mEmpty.setText(getString(R.string.gestures_error_loading,
-                        mStoreFile.getAbsolutePath()));
+                mEmpty.setText(getString(R.string.gestures_error_loading, mStoreFile.getAbsolutePath()));
             } else {
                 findViewById(R.id.addButton).setEnabled(true);
                 findViewById(R.id.reloadButton).setEnabled(true);
@@ -408,8 +404,7 @@ out:        for (String name : entries) {
 
     private class GesturesAdapter extends ArrayAdapter<NamedGesture> {
         private final LayoutInflater mInflater;
-        private final Map<Long, Drawable> mThumbnails = Collections.synchronizedMap(
-                new HashMap<Long, Drawable>());
+        private final Map<Long, Drawable> mThumbnails = Collections.synchronizedMap(new HashMap<Long, Drawable>());
 
         public GesturesAdapter(Context context) {
             super(context, 0);
@@ -431,8 +426,7 @@ out:        for (String name : entries) {
 
             label.setTag(gesture);
             label.setText(gesture.name);
-            label.setCompoundDrawablesWithIntrinsicBounds(mThumbnails.get(gesture.gesture.getID()),
-                    null, null, null);
+            label.setCompoundDrawablesWithIntrinsicBounds(mThumbnails.get(gesture.gesture.getID()), null, null, null);
 
             return convertView;
         }
