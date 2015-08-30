@@ -31,6 +31,7 @@
     <string name="i_might_have_heard">I might have heard: </string>
     <string name="or_maybe">Or maybe this: </string>
     <string name="there_were_others">. I\'m pretty funny, ey? There were some other options, but I think I\'ll stop there. </string>
+    <string name="instructions_to_look_at_menu">Hi! The menu shows the list of commands you can use (you can speak, or draw).</string>
 
     <!-- Buttons -->
     <skip />

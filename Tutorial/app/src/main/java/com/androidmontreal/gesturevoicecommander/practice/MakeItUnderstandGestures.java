@@ -135,6 +135,7 @@ public class MakeItUnderstandGestures extends Activity implements OnInitListener
                         Toast.LENGTH_LONG).show();
             } else {
                 // everything is working.
+                this.speak(getString(R.string.instructions_to_look_at_menu));
             }
         } else {
             Toast.makeText(this, "Sorry, I can't talk to you because " +
