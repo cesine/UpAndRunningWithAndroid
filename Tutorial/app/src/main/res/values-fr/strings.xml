@@ -3,6 +3,7 @@
 
     <string name="my_first_words">Bonsoir! Moi, je peux parler aussi! M\'entendez vous?</string>
     <string name="im_listening">Allez-y, Je vous écoute!</string>
+    <string name="i_cant_listen">Je suis super désolée. Ton appareil est bizarre, il manque la reconnaissance vocale. Il faudrait que t\'utilises les commandes gestuelles (au lieu de parler)...</string>
     <string name="i_might_have_heard">Je crois que j\'ai entendu: </string>
     <string name="or_maybe">Ou bien: </string>
     <string name="there_were_others"> J\'ai un sens de l\'humour, non?  Il y avait d\'autres options, mais je crois que la, c\'est assez.</string>

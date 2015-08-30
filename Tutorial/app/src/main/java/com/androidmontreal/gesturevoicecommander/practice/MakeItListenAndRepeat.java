@@ -1,10 +1,14 @@
 package com.androidmontreal.gesturevoicecommander.practice;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
@@ -38,7 +42,11 @@ public class MakeItListenAndRepeat extends Activity implements OnInitListener {
     }
 
     protected void promptTheUserToTalk() {
-        this.speak(getString(R.string.im_listening));
+        if (isIntentAvailable(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)) {
+            this.speak(getString(R.string.im_listening));
+        } else {
+            this.speak(getString(R.string.i_cant_listen));
+        }
     }
 
     /**
@@ -48,7 +56,11 @@ public class MakeItListenAndRepeat extends Activity implements OnInitListener {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.im_listening));
-        startActivityForResult(intent, RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE);
+        if (isIntentAvailable(intent)) {
+            startActivityForResult(intent, RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE);
+        } else {
+            Log.w(TAG, "This device doesn't have speech recognition, maybe its an emulator or a phone from china without google products?");
+        }
     }
 
     /**
@@ -129,6 +141,17 @@ public class MakeItListenAndRepeat extends Activity implements OnInitListener {
             Toast.makeText(this, "Sorry, I can't speak to you: " + message, Toast.LENGTH_LONG).show();
         }
         return true;
+    }
+
+    public boolean isIntentAvailable(String action) {
+        final Intent intent = new Intent(action);
+        return isIntentAvailable(intent);
+    }
+
+    public boolean isIntentAvailable(final Intent intent) {
+        final PackageManager packageManager = this.getPackageManager();
+        List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return list.size() > 0;
     }
 
 }

@@ -27,6 +27,7 @@
     <string name="label_create_gesture">Create a gesture</string>
     <string name="my_first_words">I can talk! After all, I have speakers.</string>
     <string name="im_listening">Talk to me, I\'m listening...</string>
+    <string name="i_cant_listen">I\'m sorry, your device is strange. It cannot recognize speech. You will have to use the gesture commands instead...</string>
     <string name="i_might_have_heard">I might have heard: </string>
     <string name="or_maybe">Or maybe this: </string>
     <string name="there_were_others">. I\'m pretty funny, ey? There were some other options, but I think I\'ll stop there. </string>
