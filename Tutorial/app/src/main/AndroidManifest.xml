@@ -14,36 +14,36 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.androidmontreal.gesturevoicecommander" >
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    package="com.androidmontreal.gesturevoicecommander">
 
     <uses-sdk
         android:minSdkVersion="7"
         android:targetSdkVersion="17" />
 
-    <application>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:icon="@drawable/ic_launcher">
         <activity
-            android:name="GestureBuilderActivity"
-            android:icon="@drawable/ic_gesturebuilder"
-            android:label="@string/application_name" >
-        </activity>
+            android:name=".GestureBuilderActivity"
+            android:label="@string/application_name"></activity>
         <activity
-            android:name="CreateGestureActivity"
+            android:name=".CreateGestureActivity"
             android:label="@string/label_create_gesture" />
         <activity
             android:name=".practice.MakeItTalk"
-            android:label="Text To Speech" >
-        </activity>
+            android:label="Text To Speech"></activity>
         <activity
             android:name=".practice.MakeItListenAndRepeat"
-            android:label="Speech Recognition" >
-        </activity>
+            android:label="Speech Recognition"></activity>
         <activity
             android:name=".practice.MakeItUnderstandGestures"
-            android:label="Gesture or Speech Recognition" >
+            android:label="Gesture or Speech Recognition">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

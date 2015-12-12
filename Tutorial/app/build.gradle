@@ -10,6 +10,10 @@ android {
         targetSdkVersion 17
     }
 
+    dependencies {
+        wearApp project(':wear')
+    }
+
     buildTypes {
         release {
             minifyEnabled false
