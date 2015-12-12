@@ -19,6 +19,7 @@
         <activity
             android:name=".MainWatchActivity"
             android:label="@string/app_name"
+            android:launchMode="singleInstance"
             android:theme="@android:style/Theme.DeviceDefault.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +27,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name="watch.nudge.gesturelibrary.SensorService"
+            android:enabled="true"
+            android:exported="true"
+            android:process="com.nudge.gestureservice">
+            <meta-data android:name="watch.nudge.gesturelib.version" android:value="@integer/watch_nudge_gesturelibrary_version"/>
+            <intent-filter>
+                <action android:name="watch.nudge.gesturelibrary.GestureService" >
+                </action>
+            </intent-filter>
+        </service>
+        <service android:name=".GestureLaunchReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+            </intent-filter>
+        </service>
+
+        <meta-data android:name="watch.nudge.gesturelib.appid" android:value="187532"/>
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

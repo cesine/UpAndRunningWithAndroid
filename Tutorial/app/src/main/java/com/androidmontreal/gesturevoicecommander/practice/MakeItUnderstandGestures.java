@@ -26,6 +26,8 @@ import com.androidmontreal.gesturevoicecommander.GestureBuilderActivity;
 import com.androidmontreal.gesturevoicecommander.R;
 import com.androidmontreal.gesturevoicecommander.robots.RoverLexicon;
 
+import watch.nudge.phonegesturelibrary.AbstractPhoneGestureActivity;
+
 /**
  * Building on what we saw in MakeItListenAndRepeat, now lets make it understand
  * gestures, or speech (sometimes its too noisy or too public to speak to your
@@ -35,7 +37,7 @@ import com.androidmontreal.gesturevoicecommander.robots.RoverLexicon;
  *
  * @author cesine
  */
-public class MakeItUnderstandGestures extends Activity implements OnInitListener, OnGesturePerformedListener {
+public class MakeItUnderstandGestures extends AbstractPhoneGestureActivity implements OnInitListener, OnGesturePerformedListener {
     private static final String TAG = "MakeItUnderstandGesture";
     private static final int RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE = 341;
     private static final boolean D = true;
@@ -55,7 +57,7 @@ public class MakeItUnderstandGestures extends Activity implements OnInitListener
     private RoverLexicon lexicon;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mTts = new TextToSpeech(this, this);
@@ -113,7 +115,7 @@ public class MakeItUnderstandGestures extends Activity implements OnInitListener
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         if (mTts != null) {
             mTts.stop();
             mTts.shutdown();
@@ -164,6 +166,45 @@ public class MakeItUnderstandGestures extends Activity implements OnInitListener
             sendRobotThisCommand(predictions.get(0).name);
         }
     }
+    @Override
+    public void onSnap() {
+        sendRobotThisCommand(lexicon.stop());
+    }
+
+    @Override
+    public void onFlick() {
+        sendRobotThisCommand(lexicon.explore());
+    }
+
+    @Override
+    public void onTwist() {
+        sendRobotThisCommand(lexicon.rotateRight());
+    }
+
+//These functions won't be called until you subscribe to the appropriate gestures
+//in a class that extends AbstractGestureClientActivity in a wear app.
+
+    @Override
+    public void onTiltX(float x) {
+        Log.e(TAG, "This function should not be called unless subscribed to TILT_X.");
+        if (x < 0){
+            sendRobotThisCommand(lexicon.turnLeft());
+        } else {
+            sendRobotThisCommand(lexicon.turnRight());
+        }
+//        throw new IllegalStateException("This function should not be called unless subscribed to TILT_X.");
+    }
+
+    @Override
+    public void onTilt(float x, float y, float z) {
+//        throw new IllegalStateException("This function should not be called unless subscribed to TILT.");
+    }
+
+    @Override
+    public void onWindowClosed() {
+        Log.e("MainWatchActivity","This function should not be called unless windowed gesture detection is enabled.");
+    }
+
 
     public String sendRobotThisCommand(String command) {
         String guessedCommand = lexicon.guessWhatToDo(command);
