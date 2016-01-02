@@ -45,6 +45,10 @@
         </activity>
         <activity
             android:name=".practice.MakeItUnderstandGestures"
+            android:label="Speech Recognition" >
+        </activity>
+        <activity
+            android:name=".robots.Robot"
             android:label="Gesture or Speech Recognition" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
