@@ -32,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidmontreal.gesturevoicecommander.R;
 
@@ -49,6 +50,11 @@ public class DeviceListActivity extends Activity {
      * Tag for Log
      */
     private static final String TAG = "DeviceListActivity";
+
+    /**
+     * Request codes
+     */
+    private static final int REQUEST_ENABLE_BT = 9234;
 
     /**
      * Return Intent extra
@@ -72,9 +78,22 @@ public class DeviceListActivity extends Activity {
         // Setup the window
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_device_list);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         // Set result CANCELED in case the user backs out
         setResult(Activity.RESULT_CANCELED);
+
+        // Get the local Bluetooth adapter
+        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBtAdapter == null){
+            blueToothIsNotSupported();
+            return;
+        }
+        requestBluetooth();
 
         // Initialize the button to perform device discovery
         Button scanButton = (Button) findViewById(R.id.button_scan);
@@ -109,9 +128,6 @@ public class DeviceListActivity extends Activity {
         filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.registerReceiver(mReceiver, filter);
 
-        // Get the local Bluetooth adapter
-        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-
         // Get a set of currently paired devices
         Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
 
@@ -122,9 +138,21 @@ public class DeviceListActivity extends Activity {
                 pairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
             }
         } else {
-            String noDevices = getResources().getText(R.string.none_paired).toString();
+            String noDevices = getResources().getText(R.string.bluetooth_none_paired).toString();
             pairedDevicesArrayAdapter.add(noDevices);
         }
+    }
+
+    public void requestBluetooth(){
+        if (!mBtAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+    }
+
+    public void blueToothIsNotSupported(){
+        Toast.makeText(this, R.string.bluetooth_not_supported, Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override
@@ -140,11 +168,33 @@ public class DeviceListActivity extends Activity {
         this.unregisterReceiver(mReceiver);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+
+            case REQUEST_ENABLE_BT:
+                if (resultCode != Activity.RESULT_OK || resultCode == Activity.RESULT_CANCELED) {
+                    Toast.makeText(this, R.string.bluetooth_not_enabled_leaving, Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    // Can use bluetooth
+                }
+                break;
+        }
+    }
+
     /**
      * Start device discover with the BluetoothAdapter
      */
     private void doDiscovery() {
         Log.d(TAG, "doDiscovery()");
+
+        if (mBtAdapter == null) {
+            finish();
+            return;
+        }
 
         // Indicate scanning in the title
         setProgressBarIndeterminateVisibility(true);
@@ -207,7 +257,7 @@ public class DeviceListActivity extends Activity {
                 setProgressBarIndeterminateVisibility(false);
                 setTitle(R.string.select_device);
                 if (mNewDevicesArrayAdapter.getCount() == 0) {
-                    String noDevices = getResources().getText(R.string.none_found).toString();
+                    String noDevices = getResources().getText(R.string.bluetooth_none_found).toString();
                     mNewDevicesArrayAdapter.add(noDevices);
                 }
             }
