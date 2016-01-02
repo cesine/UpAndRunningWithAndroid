@@ -1,10 +1,13 @@
 package com.androidmontreal.gesturevoicecommander.robots;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -15,6 +18,8 @@ import android.gesture.GestureOverlayView;
 import android.gesture.Prediction;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
@@ -24,20 +29,19 @@ import android.widget.Toast;
 
 import com.androidmontreal.gesturevoicecommander.GestureBuilderActivity;
 import com.androidmontreal.gesturevoicecommander.R;
-import com.androidmontreal.gesturevoicecommander.robots.Lexicon;
 
 /**
- * Building on what we saw in MakeItListenAndRepeat, now lets make it understand
- * gestures, or speech (sometimes its too noisy or too public to speak to your
- * Android). Here is some super simple code that builds on the GestureBuilder
- * sample code to recognize what the user wants the Android to do, and then use
- * Text To Speech to tell the user what it might have understood.
+ * Building on what we saw in MakeItUnderstand, now lets make it perform
+ * actions. Here is some super simple code that builds on the BluetoothChat
+ * sample code to send meassages to a bluetooth device/robot.
  *
  * @author cesine
  */
 public class Robot extends Activity implements OnInitListener, OnGesturePerformedListener {
-    private static final String TAG = "MakeItUnderstandGesture";
+    private static final String TAG = "Robot";
     private static final int RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE = 341;
+    public static final int REQUEST_CONNECT_DEVICE = 8888;
+
     private static final boolean D = true;
 
     /**
@@ -54,6 +58,15 @@ public class Robot extends Activity implements OnInitListener, OnGesturePerforme
     /* A little lexicon we made for the DFR Rover at Cloud Robotics Hackathon */
     private Lexicon lexicon;
 
+    /* A re-executable sequence of commands in time */
+    private HashMap<Long, String> mCommandMemory;
+
+    /* Message passing to an actual bluetooth device/robot */
+    private BluetoothAdapter mBluetoothAdapter = null;
+    private BluetoothChatService mChatService;
+    private String mConnectedDeviceName = "";
+    private static final boolean SECURE_CONNECTION = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,11 +80,29 @@ public class Robot extends Activity implements OnInitListener, OnGesturePerforme
         // gestureLib = GestureLibraries.fromFile(fileOnYourSDCard);
         gestureLib = GestureLibraries.fromRawResource(this, R.raw.gestures);
         if (!gestureLib.load()) {
+            Toast.makeText(this, R.string.gestures_empty, Toast.LENGTH_SHORT).show();
             finish();
         }
         setContentView(gestureOverlayView);
 
         lexicon = new Lexicon();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mCommandMemory == null) {
+            mCommandMemory = new HashMap<Long, String>();
+        }
+
+        if (mChatService != null) {
+            // Only if the state is STATE_NONE, do we know that we haven't started already
+            if (mChatService.getState() == BluetoothChatService.STATE_NONE) {
+                // Start the Bluetooth chat services
+                mChatService.start();
+            }
+        }
     }
 
     protected void promptTheUserToTalk() {
@@ -101,14 +132,28 @@ public class Robot extends Activity implements OnInitListener, OnGesturePerforme
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
-            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-      /* try to find a robot command in the first match */
-            if (matches.size() > 0) {
-                sendRobotThisCommand(matches.get(0));
-            }
-        }
         super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    /* try to find a robot command in the first match */
+                    if (matches.size() > 0) {
+                        sendRobotThisCommand(matches.get(0));
+                    }
+                }
+                break;
+            case REQUEST_CONNECT_DEVICE:
+                // When DeviceListActivity returns with a device to connect
+                if (resultCode == Activity.RESULT_OK) {
+                    if (mChatService == null) {
+                        mChatService = new BluetoothChatService(this, mHandler);
+                    }
+                    connectDevice(data);
+                }
+                break;
+        }
     }
 
     @Override
@@ -117,6 +162,11 @@ public class Robot extends Activity implements OnInitListener, OnGesturePerforme
             mTts.stop();
             mTts.shutdown();
         }
+
+        if (mChatService != null) {
+            mChatService.stop();
+        }
+
         super.onDestroy();
     }
 
@@ -164,17 +214,109 @@ public class Robot extends Activity implements OnInitListener, OnGesturePerforme
         }
     }
 
-    public String sendRobotThisCommand(String command) {
-        String guessedCommand = lexicon.guessWhatToDo(command);
-        Toast.makeText(this, guessedCommand, Toast.LENGTH_SHORT).show();
-
-        if (Locale.getDefault().getLanguage().contains("fr")) {
-            mTts.speak(lexicon.FR_CARRIER_PHRASE + guessedCommand, TextToSpeech.QUEUE_ADD, null);
-        } else {
-            mTts.speak(lexicon.EN_CARRIER_PHRASE + guessedCommand, TextToSpeech.QUEUE_ADD, null);
+    /**
+     * Establish connection with a physical device/body via bluetooth
+     *
+     * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
+     */
+    private void connectDevice(Intent data) {
+        // Get the device MAC address
+        String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+        // Get the BluetoothDevice object
+        if (mBluetoothAdapter == null) {
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         }
-        return lexicon.executeGuess();
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        // Attempt to connect to the device
+        mChatService.connect(device, SECURE_CONNECTION);
     }
+
+    public String sendRobotThisCommand(String requestedCommand) {
+        String understoodCommand = lexicon.guessWhatToDo(requestedCommand);
+
+        // communicate understood command
+        Toast.makeText(this, understoodCommand, Toast.LENGTH_SHORT).show();
+        if (Locale.getDefault().getLanguage().contains("fr")) {
+            mTts.speak(lexicon.FR_CARRIER_PHRASE + understoodCommand, TextToSpeech.QUEUE_ADD, null);
+        } else {
+            mTts.speak(lexicon.EN_CARRIER_PHRASE + understoodCommand, TextToSpeech.QUEUE_ADD, null);
+        }
+
+        // remember understood command
+        mCommandMemory.put(System.currentTimeMillis(), "I want to: " + understoodCommand);
+
+        // translate into body commands
+        String bodyCommand = lexicon.executeGuess();
+        if ("CONNECT".equals(bodyCommand)) {
+            Intent serverIntent = new Intent(this, DeviceListActivity.class);
+            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+            return "";
+        }
+        if (mChatService != null){
+            // Check that we're actually connected before trying anything
+            if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+                Toast.makeText(this, R.string.bluetooth_not_connected, Toast.LENGTH_SHORT).show();
+                return understoodCommand;
+            }
+            // Check that there's actually something to send
+            if (bodyCommand.length() > 0) {
+                // Get the message bytes and tell the BluetoothChatService to write
+                byte[] send = bodyCommand.getBytes();
+                mChatService.write(send);
+            }
+        }
+
+        return understoodCommand;
+    }
+
+    /**
+     * The Handler that gets information back from the BluetoothChatService
+     */
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case BluetoothChatService.MESSAGE_STATE_CHANGE:
+                    switch (msg.arg1) {
+                        case BluetoothChatService.STATE_CONNECTED:
+                            Log.d(TAG, getString(R.string.title_connected_to, mConnectedDeviceName));
+                            break;
+                        case BluetoothChatService.STATE_CONNECTING:
+                            Log.d(TAG, "title_connecting");
+                            break;
+                        case BluetoothChatService.STATE_LISTEN:
+                            break;
+                        case BluetoothChatService.STATE_NONE:
+                            Log.d(TAG, "title_not_connected");
+                            break;
+                    }
+                    break;
+                case BluetoothChatService.MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+                    String bodyCommand = new String(writeBuf);
+                    mCommandMemory.put(System.currentTimeMillis(), "I told my body to:  " + bodyCommand);
+                    break;
+                case BluetoothChatService.MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    speak(readMessage);
+                    mCommandMemory.put(System.currentTimeMillis(), "My body did:  " + readMessage);
+                    break;
+                case BluetoothChatService.MESSAGE_DEVICE_NAME:
+                    // save the connected device's name
+                    mConnectedDeviceName = msg.getData().getString(BluetoothChatService.DEVICE_NAME);
+                    Toast.makeText(getApplicationContext(), "My body is: "
+                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                    break;
+                case BluetoothChatService.MESSAGE_TOAST:
+                    Toast.makeText(getApplicationContext(), msg.getData().getString(BluetoothChatService.TOAST),
+                            Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
 
     public void onCommandByVoiceClick(View v) {
         promptTheUserToTalk();

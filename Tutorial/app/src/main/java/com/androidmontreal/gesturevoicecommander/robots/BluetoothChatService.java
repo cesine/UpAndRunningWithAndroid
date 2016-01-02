@@ -336,6 +336,7 @@ public class BluetoothChatService {
 					socket = mmServerSocket.accept();
 				} catch (IOException e) {
 					Log.e(TAG, "Socket Type: " + mSocketType + "accept() failed", e);
+                    e.printStackTrace();
 					break;
 				}
 
@@ -404,6 +405,7 @@ public class BluetoothChatService {
 				}
 			} catch (IOException e) {
 				Log.e(TAG, "Socket Type: " + mSocketType + "create() failed", e);
+                e.printStackTrace();
 			}
 			mmSocket = tmp;
 		}
@@ -421,12 +423,15 @@ public class BluetoothChatService {
 				// successful connection or an exception
 				mmSocket.connect();
 			} catch (IOException e) {
+                Log.d(TAG, "exception when trying to connect");
+                e.printStackTrace();
 				// Close the socket
 				try {
 					mmSocket.close();
 				} catch (IOException e2) {
 					Log.e(TAG, "unable to close() " + mSocketType +
 							" socket during connection failure", e2);
+                    e2.printStackTrace();
 				}
 				connectionFailed();
 				return;
