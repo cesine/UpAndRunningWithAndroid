@@ -1,9 +1,11 @@
 package com.androidmontreal.gesturevoicecommander.robots;
 
+import android.content.Intent;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class RoverLexicon {
+public class Lexicon {
     private int language;
     private int timer = 5;
 
@@ -164,21 +166,21 @@ public class RoverLexicon {
         return "";
     }
 
-    public RoverLexicon(int language, int timer) {
+    public Lexicon(int language, int timer) {
         super();
         defineLanguages();
         this.language = language;
         this.timer = timer;
     }
 
-    public RoverLexicon(int language) {
+    public Lexicon(int language) {
         super();
         defineLanguages();
         this.language = language;
         this.timer = 5;
     }
 
-    public RoverLexicon() {
+    public Lexicon() {
         super();
         defineLanguages();
         if (Locale.getDefault().getLanguage().contains("fr")) {

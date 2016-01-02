@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 import com.androidmontreal.gesturevoicecommander.GestureBuilderActivity;
 import com.androidmontreal.gesturevoicecommander.R;
-import com.androidmontreal.gesturevoicecommander.robots.RoverLexicon;
+import com.androidmontreal.gesturevoicecommander.robots.Lexicon;
 
 /**
  * Building on what we saw in MakeItListenAndRepeat, now lets make it understand
@@ -52,7 +52,7 @@ public class MakeItUnderstandGestures extends Activity implements OnInitListener
     private GestureLibrary gestureLib;
 
     /* A little lexicon we made for the DFR Rover at Cloud Robotics Hackathon */
-    private RoverLexicon lexicon;
+    private Lexicon lexicon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +71,7 @@ public class MakeItUnderstandGestures extends Activity implements OnInitListener
         }
         setContentView(gestureOverlayView);
 
-        lexicon = new RoverLexicon();
-
+        lexicon = new Lexicon();
     }
 
     protected void promptTheUserToTalk() {
