@@ -1,4 +1,4 @@
-package com.androidmontreal.gesturevoicecommander.practice;
+package com.androidmontreal.gesturevoicecommander.robots;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import com.androidmontreal.gesturevoicecommander.robots.Lexicon;
  *
  * @author cesine
  */
-public class MakeItUnderstandGestures extends Activity implements OnInitListener, OnGesturePerformedListener {
+public class Robot extends Activity implements OnInitListener, OnGesturePerformedListener {
     private static final String TAG = "MakeItUnderstandGesture";
     private static final int RETURN_FROM_VOICE_RECOGNITION_REQUEST_CODE = 341;
     private static final boolean D = true;
