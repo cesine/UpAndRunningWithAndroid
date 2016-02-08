@@ -1,9 +1,11 @@
 package com.androidmontreal.gesturevoicecommander.robots;
 
+import android.content.Intent;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class RoverLexicon {
+public class Lexicon {
     private int language;
     private int timer = 5;
 
@@ -23,10 +25,11 @@ public class RoverLexicon {
     public static final int EXPLORE = 1;
     public static final int FORWARD = 2;
     public static final int REVERSE = 3;
-    public static final int TURNRIGHT = 6;
-    public static final int TURNLEFT = 7;
     public static final int ROTATERIGHT = 4;
     public static final int ROTATELEFT = 5;
+    public static final int TURNRIGHT = 6;
+    public static final int TURNLEFT = 7;
+    public static final int CONNECT = 8;
 
     private ArrayList<String> en;
     private ArrayList<String> fr;
@@ -65,6 +68,10 @@ public class RoverLexicon {
         return "1R2F";
     }
 
+    public String connect() {
+        return "CONNECT";
+    }
+
     public void defineLanguages() {
         en = new ArrayList<String>();
         en.add(STOP, "stop:wait:don't:no:damn");
@@ -75,6 +82,7 @@ public class RoverLexicon {
         en.add(ROTATELEFT, "rotate&left");
         en.add(TURNRIGHT, "right");
         en.add(TURNLEFT, "left");
+        en.add(CONNECT, "connect:body:robot:bluetooth");
 
         fr = new ArrayList<String>();
         fr.add(STOP, "arrête:arrêter:arrêté:arrêter:arrêtez:pas:voyons:voyant:m****:merde:zut:non:stop");
@@ -85,11 +93,13 @@ public class RoverLexicon {
         fr.add(ROTATELEFT, "pivoter vers la gauche:vers la gauche:rotate&gauche");
         fr.add(TURNRIGHT, "à la droite:droite:droit:right");
         fr.add(TURNLEFT, "à la gauche:gauche:left");
-
+        fr.add(CONNECT, "connecter:mon corps:robot:bluetooth");
     }
 
     public String execute(int commandInteger) {
         switch (commandInteger) {
+            case CONNECT:
+                return connect();
             case STOP:
                 return stop();
             case EXPLORE:
@@ -123,9 +133,9 @@ public class RoverLexicon {
         for (int i = 0; i < humancommands.size(); i++) {
             String[] andwords = humancommands.get(i).split("&");
             String[] orwords = humancommands.get(i).split(":");
-      /*
-       * If there are AND words, then check first to see if it matches all words
-       */
+            /*
+             * If there are AND words, then check first to see if it matches all words
+             */
             if (andwords.length > 1) {
                 int wordsfound = 0;
                 commandForHumans = andwords[0];
@@ -136,17 +146,19 @@ public class RoverLexicon {
                 }
                 if (wordsfound >= andwords.length) {
                     commandToExecute = i;
+                    mCommandToExecute = commandToExecute;
                     return commandForHumans;
                 }
             }
-      /*
-       * Then if a command hasn't been issued, check for the OR words.
-       */
+            /*
+             * Then if a command hasn't been issued, check for the OR words.
+             */
             if (orwords.length > 0) {
                 commandForHumans = orwords[0];
                 for (int k = 0; k < orwords.length; k++) {
                     if (command.contains(orwords[k])) {
                         commandToExecute = i;
+                        mCommandToExecute = commandToExecute;
                         return commandForHumans;
                     }
                 }
@@ -164,21 +176,21 @@ public class RoverLexicon {
         return "";
     }
 
-    public RoverLexicon(int language, int timer) {
+    public Lexicon(int language, int timer) {
         super();
         defineLanguages();
         this.language = language;
         this.timer = timer;
     }
 
-    public RoverLexicon(int language) {
+    public Lexicon(int language) {
         super();
         defineLanguages();
         this.language = language;
         this.timer = 5;
     }
 
-    public RoverLexicon() {
+    public Lexicon() {
         super();
         defineLanguages();
         if (Locale.getDefault().getLanguage().contains("fr")) {

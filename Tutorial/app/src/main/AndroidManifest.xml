@@ -18,6 +18,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.androidmontreal.gesturevoicecommander" >
 
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-sdk
@@ -43,6 +45,10 @@
         </activity>
         <activity
             android:name=".practice.MakeItUnderstandGestures"
+            android:label="Speech Recognition" >
+        </activity>
+        <activity
+            android:name=".robots.Robot"
             android:label="Gesture or Speech Recognition" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,6 +56,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".robots.DeviceListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/select_device"
+            android:theme="@android:style/Theme.Holo.Dialog">
         </activity>
     </application>
 
