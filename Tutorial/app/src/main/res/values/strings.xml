@@ -77,4 +77,25 @@
     <!-- Message, displayed when the sdcard cannot be found, 1st parameter is the name of the file that stores the gestures.  CHAR LIMIT=80 -->
     <string name="gestures_error_loading">Could not load %s. Make sure you have storage available.</string>
 
+    <!--  BluetoothChat -->
+    <string name="send">Send</string>
+    <string name="bluetooth_not_supported">This device does not support bluetooth.</string>
+    <string name="bluetooth_not_connected">You are not connected to a device.</string>
+    <string name="bluetooth_not_enabled_leaving">Bluetooth was not enabled. You won\'t be able to use the bluetooth functionality of this app.</string>
+    <string name="title_connecting">Connecting...</string>
+    <string name="title_connected_to">Connected: </string>
+    <string name="title_not_connected">Not connected.</string>
+
+    <!--  DeviceListActivity -->
+    <string name="scanning">Scanning for devices...</string>
+    <string name="select_device">Select a device to connect</string>
+    <string name="bluetooth_none_paired">No devices have been paired</string>
+    <string name="bluetooth_none_found">No devices found</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Available Devices</string>
+    <string name="button_scan">Scan for devices</string>
+
+    <!-- Options Menu -->
+    <string name="connect">Connect a device</string>
+    <string name="discoverable">Make discoverable</string>
 </resources>
