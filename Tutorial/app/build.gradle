@@ -6,8 +6,15 @@ android {
 
     defaultConfig {
         applicationId "com.androidmontreal.gesturevoicecommander"
-        minSdkVersion 7
-        targetSdkVersion 17
+        minSdkVersion 18
+        compileSdkVersion 21
+        targetSdkVersion 23
+    }
+
+    dependencies {
+        wearApp project(':wear')
+        compile 'com.google.android.gms:play-services:7.8.0'
+        compile 'watch.nudge.phonegesturelibrary:phone-gest-lib:0.8.4'
     }
 
     buildTypes {
