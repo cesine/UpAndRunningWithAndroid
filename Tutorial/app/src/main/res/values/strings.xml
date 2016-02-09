@@ -22,7 +22,7 @@
     <!-- General -->
     <skip />
     <!-- Application name -->
-    <string name="application_name">UpAndRunningWithAndroid</string>
+    <string name="application_name">Controller</string>
     <!-- Title, name of the activity used to create a gesture -->
     <string name="label_create_gesture">Create a gesture</string>
     <string name="my_first_words">I can talk! After all, I have speakers.</string>
