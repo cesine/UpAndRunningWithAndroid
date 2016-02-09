@@ -44,6 +44,8 @@ public class MainWatchActivity extends AbstractGestureClientActivity {
         gestures.add(GestureConstants.SubscriptionGesture.FLICK);
         gestures.add(GestureConstants.SubscriptionGesture.SNAP);
         gestures.add(GestureConstants.SubscriptionGesture.TWIST);
+        gestures.add(GestureConstants.SubscriptionGesture.TILT_X);
+        gestures.add(GestureConstants.SubscriptionGesture.TILT);
         return gestures;
     }
 
@@ -67,19 +69,15 @@ public class MainWatchActivity extends AbstractGestureClientActivity {
         Toast.makeText(this,"Gesture window closed.",Toast.LENGTH_LONG).show();
     }
 
-//These functions won't be called until you subscribe to the appropriate gestures.
-
     @Override
     public void onTiltX(float x) {
-//        throw new IllegalStateException("This function should not be called unless subscribed to TILT_X.");
+        Toast.makeText(this,"onTiltX " + x,Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onTilt(float x, float y, float z) {
-//        throw new IllegalStateException("This function should not be called unless subscribed to TILT.");
+        Toast.makeText(this,"onTilt " + x + " " + y + " " + z,Toast.LENGTH_LONG).show();
     }
-
-
 
     @Override
     public boolean sendsGestureToPhone() {

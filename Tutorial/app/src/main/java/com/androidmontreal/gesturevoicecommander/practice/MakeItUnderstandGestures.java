@@ -185,7 +185,7 @@ public class MakeItUnderstandGestures extends AbstractPhoneGestureActivity imple
 
     @Override
     public void onTiltX(float x) {
-        Log.e(TAG, "This function should not be called unless subscribed to TILT_X.");
+        Log.e(TAG, "This function should not be called unless subscribed to TILT_X " + x);
         if (x < 0){
             sendRobotThisCommand(lexicon.turnLeft());
         } else {
@@ -196,7 +196,7 @@ public class MakeItUnderstandGestures extends AbstractPhoneGestureActivity imple
 
     @Override
     public void onTilt(float x, float y, float z) {
-//        throw new IllegalStateException("This function should not be called unless subscribed to TILT.");
+        Log.e(TAG, "This function should not be called unless subscribed to onTilt." + x + " " + y + " " + z);
     }
 
     @Override
